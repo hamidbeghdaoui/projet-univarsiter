@@ -1,0 +1,46 @@
+.dc{
+    text-align: center;
+    display: block;
+    position: relative;
+    width:80%;
+    margin:100px auto;
+}
+.d_404{
+    font-size: 220px;
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+    height: 250px;
+    letter-spacing: 15px;
+}
+.d_1{
+    text-align:center;
+    display:block;
+    position:relative;
+    letter-spacing: 12px;
+    font-size: 4em;
+    line-height: 80%;
+}
+.d_2{
+    text-align:center;
+    display:block;
+    position: relative;
+    font-size: 20px;
+}
+
+
+
+.Dbtn{
+    background-color: rgb( 255, 255, 255 );
+    position: relative;
+    display: inline-block;
+    width: 358px;
+    padding: 5px;
+    z-index: 5;
+    font-size: 25px;
+    margin:0 auto;
+    color:#33cc99;
+    text-decoration: none;
+    margin-right: 10px
+}
+

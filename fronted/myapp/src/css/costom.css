@@ -1,0 +1,191 @@
+html {
+    scroll-behavior: smooth;
+  }
+  
+  .imgHome{
+      border-radius: 50%;
+  }
+       /* nav */
+     #nav_login{
+      font-size: 10px;
+    
+     }
+ .bg-projet{
+   background-color: #F8F9FC;
+   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+ }    
+
+ .nav-message{
+   cursor: pointer;
+ }
+  
+ .nav-message-active{
+   font-weight: 600;
+   border-bottom:2px solid rgb(201, 201, 201);
+
+ }
+ .div-message{
+   height: 60vh;
+ }
+
+ .div-message {
+   background: red;
+  overflow: auto;
+  margin-top: 30px;
+  -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+  -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+  box-shadow: -1px -0.5px 5px rgba(0, 0, 0, .5);
+  padding: 10px;
+  background: rgb(136, 133, 133);
+}
+.div-message::-webkit-scrollbar {
+   width: 12px;
+}
+
+.div-message::-webkit-scrollbar-track {
+   -webkit-box-shadow: inset 0 0 6px rgba(0, 65, 206, 0.5); 
+   border-radius: 10px;
+}
+
+.div-message::-webkit-scrollbar-thumb {
+   border-radius: 10px;
+   -webkit-box-shadow: inset 0 0 6px rgba(0, 65, 206, 0.5);  
+}
+.date-message{
+  font-size: 12px;
+}
+.p-message{
+  font-size: 14px;
+}
+  
+   
+  
+      /* login */
+  
+      @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+  
+  .LOlogin-page {
+    width: 360px;
+    padding: 8% 0 0;
+    margin: auto;
+  }
+  .LOform {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+  }
+  .LOform input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  .LOform .check {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 18px;
+    border: 0;
+    margin-left:5px;
+    margin-right: 5px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+  .LOform button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #4CAF50;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+  }
+  .LOform button:hover,.LOform button:active,.LOform button:focus {
+    background: #43A047;
+  }
+  .LOform .LOmessage {
+    margin: 15px 0 0;
+    color: #b3b3b3;
+    font-size: 12px;
+  }
+  .LOform .LOmessage a {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  .LOform .LOregister-form {
+    display: none;
+  }
+  .LOcontainer {
+    position: relative;
+    z-index: 1;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .LOcontainer:before, .LOcontainer:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  .LOcontainer .LOinfo {
+    margin: 50px auto;
+    text-align: center;
+  }
+  .LOcontainer .LOinfo h1 {
+    margin: 0 0 15px;
+    padding: 0;
+    font-size: 36px;
+    font-weight: 300;
+    color: #1a1a1a;
+  }
+  .LOcontainer .LOinfo span {
+    color: #4d4d4d;
+    font-size: 12px;
+  }
+  .LOcontainer .LOinfo span a {
+    color: #000000;
+    text-decoration: none;
+  }
+  .LOcontainer .LOinfo span .LOfa {
+    color: #EF3B3A;
+  }
+  
+          /* profile */
+  .active1 {
+    
+    border-bottom: 2px solid #1abc9c;
+    
+    
+  }  
+  .nav-link{
+    cursor: pointer;
+  }
+  .size-1{
+    font-size: 12px;
+  }
+       
+  
+  
+          
+  
+  
+          
+  
+  
+  
