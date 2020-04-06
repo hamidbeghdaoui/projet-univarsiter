@@ -2,10 +2,6 @@ import React, { Component, Fragment } from 'react';
 import Accueil from "./../pages/accueil";
 import AjouterPublication from "./../pages/ajouterPublication";
 import MesPublications from "./../pages/mesPublications";
-import TousLesPublications from "./../pages/tousLesPublications";
-import PublicationsEtudiants from "./../pages/publicationsEtudiants";
-import PublicationsProf from "./../pages/publicationsProf";
-import PublicationsLaGestion from "./../pages/publicationsLaGestion";
 import PublicationsEnregistrées from "./../pages/publicationsEnregistrées";
 import DesMessages from "./../pages/desMessages";
 import L_Administration from "./../pages/l_Administration";
@@ -21,18 +17,10 @@ class Body extends Component {
         return (<AjouterPublication />);
       case "Mes Publications":
         return (<MesPublications />);
-      case "Tous Les Publications":
-        return (<TousLesPublications />);
-      case "Publications Etudiants":
-        return (<PublicationsEtudiants />);
-      case "Publications Prof":
-        return (<PublicationsProf />);
-      case "Publications La Gestion":
-        return (<PublicationsLaGestion />);
       case "Publications Enregistrées":
         return (<PublicationsEnregistrées />);
       case "Des Messages":
-        return (<DesMessages />);
+        return (<DesMessages message = {this.props.message}  />);
       case "Prof":
         return (<Prof />);
       case "L'administration":

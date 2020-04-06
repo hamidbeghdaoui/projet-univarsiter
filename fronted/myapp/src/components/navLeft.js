@@ -41,7 +41,7 @@ class NavLeft extends Component {
         <ul className={"navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " + (this.props.classToggled === true ? "toggled" : "")} id="accordionSidebar">
 
           {/* <!-- Sidebar - Brand --> */}
-          <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+          <a className="sidebar-brand d-flex align-items-center justify-content-center" href="" onClick={()=>window.location.reload(false)}>
             <div className="sidebar-brand-icon rotate-n-15">
               <i className="fas fa-graduation-cap"></i>
             </div>
@@ -82,18 +82,6 @@ class NavLeft extends Component {
 
                 <a className={"collapse-item " + (this.props.ComponentPage === "Mes Publications" ? "active" : "")}
                   onClick={() => this.props.FunNavChangePage("Mes Publications")} >Mes Publications</a>
-
-                <a className={"collapse-item " + (this.props.ComponentPage === "Tous Les Publications" ? "active" : "")}
-                  onClick={() => this.props.FunNavChangePage("Tous Les Publications")}  >Tous Les Publications</a>
-
-                <a className={"collapse-item " + (this.props.ComponentPage === "Publications Etudiants" ? "active" : "")}
-                  onClick={() => this.props.FunNavChangePage("Publications Etudiants")}  >Publications Etudiants</a>
-
-                <a className={"collapse-item " + (this.props.ComponentPage === "Publications Prof" ? "active" : "")}
-                  onClick={() => this.props.FunNavChangePage("Publications Prof")}  >Publications Prof</a>
-
-                <a className={"collapse-item " + (this.props.ComponentPage === "Publications La Gestion" ? "active" : "")}
-                  onClick={() => this.props.FunNavChangePage("Publications La Gestion")}  >Publications La Gestion</a>
 
                 <a className={"collapse-item " + (this.props.ComponentPage === "Publications Enregistrées" ? "active" : "")}
                   onClick={() => this.props.FunNavChangePage("Publications Enregistrées")}  >Publications Enregistrées</a>
@@ -151,7 +139,7 @@ class NavLeft extends Component {
               <span>Paramètres</span></a>
           </li>
 
-          <li className="nav-item ">
+          <li className="nav-item " onClick={this.deconnecter}>
             <a className="nav-link">
               <i className="fas fa-fw fa-sign-out-alt"></i>
               <span>Se Déconnecter</span></a>
@@ -171,6 +159,11 @@ class NavLeft extends Component {
         </ul>
       </Fragment>
     );
+  }
+
+  deconnecter = () => {
+    localStorage.removeItem('user');
+    window.location.reload(false);
   }
 
 }

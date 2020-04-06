@@ -10,6 +10,9 @@ import Home from './routers/home';
 
 class App extends Component {
 
+ 
+
+
   render() {
     return (
       <BrowserRouter>
@@ -20,7 +23,8 @@ class App extends Component {
           <Route path="/Inscription/:eruer" component={ER} />
           <Route path="/Inscription/" component={Inscription} />
           <Route path="/Confirmation-Inscription/:eruer" component={ER} />
-          <Route path="/Confirmation-Inscription/" component={ConfirmationInscription} />
+          <Route path="/Confirmation-Inscription/" component={ConfirmationInscription}
+          />
           <Route exact path="/:eruer" component={ER} />
 
         </Switch>
@@ -28,6 +32,10 @@ class App extends Component {
       </BrowserRouter>
     );
   }
+
+
+
+
 }
 
 export default App;
