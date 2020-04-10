@@ -19,12 +19,21 @@ class Accueil extends Component {
   //---------------------------------------------When the page loads----------------------------------------
   componentDidMount() {
     this.getPub();
-  } 
+  }
 
   //---------------------------------------------contact server----------------------------------------
   getPub = () => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
     var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+    let API_PATH = "";
+    switch (sessionUser.typeUser) {
+      case "etudiant":
+        API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
+        break;
+      case "prof":
+        API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
+        break;
+    }
+
     console.log(sessionUser);
     axios({
       method: 'post',
@@ -32,14 +41,14 @@ class Accueil extends Component {
       headers: { 'content-type': 'application/json' },
       data: {
         but: 'get-pub',
-        id_etudiant: sessionUser.id_typeUser
+        id_typeUser: sessionUser.id_typeUser
       }
     })
       .then(result => {
         console.log(result.data);
         this.setState({
           component: "publication",
-          listPub:result.data 
+          listPub: result.data
 
         });
       })
@@ -51,7 +60,7 @@ class Accueil extends Component {
     return (
       this.state.listPub.length === 0 ?
         <div className="text-center m-5 p-5">
-         Il n'y a aucun publication à afficher
+          Il n'y a aucun publication à afficher
         </div>
         : <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub} />
     );

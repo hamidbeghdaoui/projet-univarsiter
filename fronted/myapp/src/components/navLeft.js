@@ -36,6 +36,8 @@ class NavLeft extends Component {
     }
   }
   render() {
+    var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+    const { id_typeUser, typeUser } = sessionUser;
     return (
       <Fragment>
         <ul className={"navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " + (this.props.classToggled === true ? "toggled" : "")} id="accordionSidebar">
@@ -45,7 +47,9 @@ class NavLeft extends Component {
             <div className="sidebar-brand-icon rotate-n-15">
               <i className="fas fa-graduation-cap"></i>
             </div>
-            <div className="sidebar-brand-text mx-3">SD ETUDIANT </div>
+            {typeUser === 'etudiant' ?<div className="sidebar-brand-text mx-3">SD ETUDIANT </div> : ''}
+            {typeUser === 'prof' ?<div className="sidebar-brand-text mx-3">SD PROF </div> : ''}
+            {typeUser === 'admin' ?<div className="sidebar-brand-text mx-3">SD ADMIN </div> : ''}
           </a>
 
           {/* <!-- Divider --> */}

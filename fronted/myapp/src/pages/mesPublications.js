@@ -23,8 +23,16 @@ class MesPublications extends Component {
 
     //---------------------------------------------contact server----------------------------------------
     getPub = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        let API_PATH = "";
+        switch (sessionUser.typeUser) {
+            case "etudiant":
+                API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+                break;
+            case "prof":
+                API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+                break;
+        }
         console.log(sessionUser);
         axios({
             method: 'post',
@@ -32,7 +40,7 @@ class MesPublications extends Component {
             headers: { 'content-type': 'application/json' },
             data: {
                 but: 'get-my-pub',
-                id_etudiant: sessionUser.id_typeUser,
+                id_typeUser: sessionUser.id_typeUser,
                 id_User: sessionUser.id
             }
         })
@@ -54,7 +62,13 @@ class MesPublications extends Component {
                 <div className="text-center m-5 p-5">
                     Il n'y a aucun publication à afficher
         </div>
-                : <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub} />
+                : <Fragment >
+                    {JSON.parse(localStorage.getItem('user') || null).typeUser === 'prof' ?
+                        <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub} hedenBtnEnr={true} />
+                        :
+                        <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub}  />
+                    }
+                </Fragment>
         );
     }
 

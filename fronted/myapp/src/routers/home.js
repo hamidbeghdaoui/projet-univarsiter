@@ -81,7 +81,6 @@ class Home extends Component {
             component: "Home",
             user: result.data
           });
-          console.log(this.user);
         }
       })
       .catch(error => this.setState({ error: error.message }));

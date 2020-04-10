@@ -51,8 +51,16 @@ class L_Administration extends Component {
 
 
     getMyAdminPub = (idUser, id_typeUser, typeUser) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        let API_PATH = "";
+        switch (sessionUser.typeUser) {
+          case "etudiant":
+            API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
+            break;
+          case "prof":
+            API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
+            break;
+        }
         // console.log(sessionUser);
         axios({
             method: 'post',

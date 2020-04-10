@@ -20,10 +20,10 @@ class controller_etudiant
 	 */
 	public function getPub()
 	{
-		if (isset($_POST['id_etudiant'])) {
+		if (isset($_POST['id_typeUser'])) {
 			$resaltArray = array();
 			$user = new controller_user();
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
 			$req = "SELECT affichage_groupe.id_publicationEtudiant, publication_etudiant.pub, publication_etudiant.augmenter,
 			publication_etudiant.typeAugmenter,publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
 			FROM affichage_groupe, publication_etudiant, user WHERE affichage_groupe.id_groupe =" . $InfoFaculty->id_grp . " 
@@ -57,10 +57,10 @@ class controller_etudiant
 
 	public function getMyPub()
 	{
-		if (isset($_POST['id_etudiant']) && isset($_POST['id_User'])) {
+		if (isset($_POST['id_typeUser']) && isset($_POST['id_User'])) {
 			$resaltArray = array();
 			$user = new controller_user();
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
 			$req = "SELECT affichage_groupe.id_publicationEtudiant, publication_etudiant.pub, publication_etudiant.augmenter,
 			publication_etudiant.typeAugmenter,publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
 			FROM affichage_groupe, publication_etudiant, user WHERE affichage_groupe.id_groupe =" . $InfoFaculty->id_grp . " 
@@ -135,14 +135,14 @@ class controller_etudiant
 
 	public function getMyPubEnreg()
 	{
-		if (isset($_POST['id_etudiant'])) {
+		if (isset($_POST['id_typeUser'])) {
 			$resaltArray = array();
 			$user = new controller_user();
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
 			$req = "SELECT publication_etudiant.id as id_publicationEtudiant , publication_etudiant.pub, publication_etudiant.augmenter,
 			publication_etudiant.typeAugmenter, publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
 			FROM pub_enregistrees_etudiant, publication_etudiant, user WHERE 
-            pub_enregistrees_etudiant.id_etudiant = " . $_POST['id_etudiant'] . " and  
+            pub_enregistrees_etudiant.id_etudiant = " . $_POST['id_typeUser'] . " and  
 			pub_enregistrees_etudiant.id_pub = publication_etudiant.id and publication_etudiant.id_user = user.id
 			ORDER by pub_enregistrees_etudiant.id  DESC ;";
 			$this->db->query($req);
@@ -232,7 +232,7 @@ class controller_etudiant
 	public function AjouterPublication()
 	{
 		$issets = isset($_POST['idUser']) && isset($_POST['id_typeUser']) && isset($_POST['post']) && isset($_POST['file'])
-			&& isset($_POST['typeFile']) && isset($_POST['typePublication']);
+			&& isset($_POST['typeFile']) &&  isset($_POST['typePublication']);
 		if ($issets) {
 			$augmenter = NULL;
 			$typeAugmenter = NULL;
@@ -271,25 +271,25 @@ class controller_etudiant
 				}
 				echo json_encode(true);
 			} catch (Exception $e) {
-				echo ("catch false");
+				echo false;
 			}
 		} else {
-			echo ("else false");
+			echo false;
 		}
 	}
 
 	public function insertPubEnregistrees()
 	{
-		$issets = isset($_POST['id_etudiant']) && isset($_POST['idPub']);
+		$issets = isset($_POST['id_typeUser']) && isset($_POST['idPub']);
 		if ($issets) {
-			$req = "SELECT * FROM `pub_enregistrees_etudiant` WHERE `id_etudiant`=:id_etudiant and `id_pub` =:idPub ;";
+			$req = "SELECT * FROM `pub_enregistrees_etudiant` WHERE `id_etudiant`=:id_typeUser and `id_pub` =:idPub ;";
 			$this->db->query($req);
-			$this->db->bind(":id_etudiant", strip_tags(trim($_POST['id_etudiant'])));
+			$this->db->bind(":id_typeUser", strip_tags(trim($_POST['id_typeUser'])));
 			$this->db->bind(":idPub",  strip_tags(trim($_POST['idPub'])));
 			if (empty($this->db->single())) {
-				$req = "INSERT INTO `pub_enregistrees_etudiant` (`id`, `id_etudiant`, `id_pub`) VALUES (NULL, :id_etudiant, :idPub );";
+				$req = "INSERT INTO `pub_enregistrees_etudiant` (`id`, `id_etudiant`, `id_pub`) VALUES (NULL, :id_typeUser, :idPub );";
 				$this->db->query($req);
-				$this->db->bind(":id_etudiant", strip_tags(trim($_POST['id_etudiant'])));
+				$this->db->bind(":id_typeUser", strip_tags(trim($_POST['id_typeUser'])));
 				$this->db->bind(":idPub",  strip_tags(trim($_POST['idPub'])));
 				try {
 					$this->db->execute();
@@ -302,13 +302,14 @@ class controller_etudiant
 			}
 		}
 	}
+	
 	public function deletedPubEnregistrees()
 	{
-		$issets = isset($_POST['id_etudiant']) && isset($_POST['idPub']);
+		$issets = isset($_POST['id_typeUser']) && isset($_POST['idPub']);
 		if ($issets) {
-			$req = "DELETE FROM `pub_enregistrees_etudiant` WHERE  `id_etudiant` = :id_etudiant and `id_pub` = :idPub;";
+			$req = "DELETE FROM `pub_enregistrees_etudiant` WHERE  `id_etudiant` = :id_typeUser and `id_pub` = :idPub;";
 			$this->db->query($req);
-			$this->db->bind(":id_etudiant", strip_tags(trim($_POST['id_etudiant'])));
+			$this->db->bind(":id_typeUser", strip_tags(trim($_POST['id_typeUser'])));
 			$this->db->bind(":idPub",  strip_tags(trim($_POST['idPub'])));
 			try {
 				$this->db->execute();

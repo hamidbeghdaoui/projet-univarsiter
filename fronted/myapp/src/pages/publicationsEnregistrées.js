@@ -23,8 +23,16 @@ class PublicationsEnregistrées extends Component {
 
   //---------------------------------------------contact server----------------------------------------
   getPubEnreg = () => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
     var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+    let API_PATH = "";
+    switch (sessionUser.typeUser) {
+      case "etudiant":
+        API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
+        break;
+      case "prof":
+        API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
+        break;
+    }
     console.log(sessionUser);
     axios({
       method: 'post',
@@ -32,7 +40,7 @@ class PublicationsEnregistrées extends Component {
       headers: { 'content-type': 'application/json' },
       data: {
         but: 'get-my-pub-enreg',
-        id_etudiant: sessionUser.id_typeUser,
+        id_typeUser: sessionUser.id_typeUser,
         id_User: sessionUser.id
     }
     })

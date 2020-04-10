@@ -20,8 +20,16 @@ class Publication extends Component {
 
     //---------------------------------------------contact server----------------------------------------
     InsertPubEnreg = (idPub) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        let API_PATH = "";
+        switch (sessionUser.typeUser) {
+            case "etudiant":
+                API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+                break;
+            case "prof":
+                API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+                break;
+        }
         console.log(sessionUser);
         axios({
             method: 'post',
@@ -29,7 +37,7 @@ class Publication extends Component {
             headers: { 'content-type': 'application/json' },
             data: {
                 but: 'insert-pub-Enregistrees',
-                id_etudiant: sessionUser.id_typeUser,
+                id_typeUser: sessionUser.id_typeUser,
                 idPub: idPub
             }
         })
@@ -46,8 +54,16 @@ class Publication extends Component {
     }
 
     DeletedPubEnreg = (idPub) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        let API_PATH = "";
+        switch (sessionUser.typeUser) {
+          case "etudiant":
+            API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
+            break;
+          case "prof":
+            API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
+            break;
+        }
         console.log(sessionUser);
         axios({
             method: 'post',
@@ -55,14 +71,14 @@ class Publication extends Component {
             headers: { 'content-type': 'application/json' },
             data: {
                 but: 'deleted-pub-Enregistrees',
-                id_etudiant: sessionUser.id_typeUser,
+                id_typeUser: sessionUser.id_typeUser,
                 idPub: idPub
             }
         })
             .then(result => {
                 console.log(result.data);
                 if (result.data) {
-                   this.props.getPub();
+                    this.props.getPub();
 
                 }
             })
@@ -101,17 +117,21 @@ class Publication extends Component {
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        {item.id_pub === this.state.btnPubEnreg ?
-                                            <a className="btn btn-success mt-1 mx-1 text-light  size-1">
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                        {this.props.hedenBtnEnr ? '' :
+                                            <Fragment>
+                                                {item.id_pub === this.state.btnPubEnreg ?
+                                                    <a className="btn btn-success mt-1 mx-1 text-light  size-1">
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
                                                  Enregistrer
                                            </a>
-                                            :
-                                            <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
-                                                onClick={() => this.InsertPubEnreg(item.id_pub)}>
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                                    :
+                                                    <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
+                                                        onClick={() => this.InsertPubEnreg(item.id_pub)}>
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
                                                 Enregistrer
                                             </a>
+                                                }
+                                            </Fragment>
                                         }
                                     </Fragment>
                                 }
@@ -163,17 +183,21 @@ class Publication extends Component {
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        {item.id_pub === this.state.btnPubEnreg ?
-                                            <a className="btn btn-success mt-1 mx-1 text-light  size-1">
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
-                                                 Enregistrer
-                                           </a>
-                                            :
-                                            <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
-                                                onClick={() => this.InsertPubEnreg(item.id_pub)}>
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
-                                                Enregistrer
-                                            </a>
+                                        {this.props.hedenBtnEnr ? '' :
+                                            <Fragment>
+                                                {item.id_pub === this.state.btnPubEnreg ?
+                                                    <a className="btn btn-success mt-1 mx-1 text-light  size-1">
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                             Enregistrer
+                                       </a>
+                                                    :
+                                                    <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
+                                                        onClick={() => this.InsertPubEnreg(item.id_pub)}>
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                            Enregistrer
+                                        </a>
+                                                }
+                                            </Fragment>
                                         }
                                     </Fragment>
                                 }
@@ -225,17 +249,21 @@ class Publication extends Component {
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        {item.id_pub === this.state.btnPubEnreg ?
-                                            <a className="btn btn-success mt-1 mx-1 text-light  size-1">
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
-                                                 Enregistrer
-                                           </a>
-                                            :
-                                            <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
-                                                onClick={() => this.InsertPubEnreg(item.id_pub)}>
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
-                                                Enregistrer
-                                            </a>
+                                        {this.props.hedenBtnEnr ? '' :
+                                            <Fragment>
+                                                {item.id_pub === this.state.btnPubEnreg ?
+                                                    <a className="btn btn-success mt-1 mx-1 text-light  size-1">
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                             Enregistrer
+                                       </a>
+                                                    :
+                                                    <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
+                                                        onClick={() => this.InsertPubEnreg(item.id_pub)}>
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                            Enregistrer
+                                        </a>
+                                                }
+                                            </Fragment>
                                         }
                                     </Fragment>
                                 }
@@ -283,17 +311,21 @@ class Publication extends Component {
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        {item.id_pub === this.state.btnPubEnreg ?
-                                            <a className="btn btn-success mt-1 mx-1 text-light  size-1">
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                        {this.props.hedenBtnEnr ? '' :
+                                            <Fragment>
+                                                {item.id_pub === this.state.btnPubEnreg ?
+                                                    <a className="btn btn-success mt-1 mx-1 text-light  size-1">
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
                                                  Enregistrer
                                            </a>
-                                            :
-                                            <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
-                                                onClick={() => this.InsertPubEnreg(item.id_pub)}>
-                                                <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
+                                                    :
+                                                    <a className="btn btn-dark mt-1 mx-1 text-light  size-1"
+                                                        onClick={() => this.InsertPubEnreg(item.id_pub)}>
+                                                        <i className="fas fa-bookmark fa-sm text-white-50 mr-2"></i>
                                                 Enregistrer
                                             </a>
+                                                }
+                                            </Fragment>
                                         }
                                     </Fragment>
                                 }
