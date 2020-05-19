@@ -62,7 +62,8 @@ class Accueil extends Component {
         <div className="text-center m-5 p-5">
           Il n'y a aucun publication à afficher
         </div>
-        : <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub} />
+        : 
+        <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub} />
     );
   }
 

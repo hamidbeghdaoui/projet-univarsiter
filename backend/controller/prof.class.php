@@ -334,4 +334,83 @@ class controller_prof
 			echo false;
 		}
 	}
+
+	public function getAllProfForAdmin()
+	{
+		$result = array();
+		$req = "SELECT * FROM `prof` ORDER by id  DESC";
+		$this->db->query($req);
+		$result = $this->db->resultSet();
+		echo json_encode($result);
+	}
+
+	public function getCherProfForAdmin()
+	{
+		if (isset($_POST['moteDeCHer'])) {
+			$req =
+				"SELECT * FROM prof WHERE prof.nom LIKE '" . $_POST['moteDeCHer'] . "%';";
+			$this->db->query($req);
+			$result = $this->db->resultSet();
+			echo json_encode($result);
+		}
+	}
+	
+	public function addProf()
+	{
+		$issets = isset($_POST['matricule']) && isset($_POST['nom'])
+			&& isset($_POST['prenom']) && isset($_POST['passwordInscription']);
+		if ($issets) {
+			$req = "SELECT id FROM `prof` where matricule =:matricule";
+			$this->db->query($req);
+			$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+			if ($this->db->single() != null) {
+				echo "M_NotUnique";
+			} else {
+				$req = "INSERT INTO `prof` (`id`, `matricule`, `nom`, `prenom`, `phone`, `email`, `image`, `password_inscription`) 
+		 VALUES (NULL, :matricule, :nom, :prenom, NULL, NULL, NULL, :passwordInscription);";
+				$this->db->query($req);
+				$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+				$this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
+				$this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
+				$this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
+				try {
+					$this->db->execute();
+					echo "true";
+				} catch (\Throwable $th) {
+					echo "false";
+				}
+			}
+		}
+	}
+
+	public function modiferInfoProf()
+	{
+		$issets = isset($_POST['id']) && isset($_POST['matricule']) && isset($_POST['nom'])
+			&& isset($_POST['prenom']) && isset($_POST['passwordInscription']);
+		if ($issets) {
+			$req = "SELECT id FROM `prof` where matricule =:matricule and id != :id ";
+			$this->db->query($req);
+			$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+			if ($this->db->single() != null) {
+				echo "M_NotUnique";
+			} else {
+				$req = "UPDATE `prof` SET `matricule` = :matricule, `nom` = :nom,
+		  `prenom` = :prenom, `password_inscription` = :passwordInscription 
+		  WHERE `prof`.`id` = :id;";
+				$this->db->query($req);
+				$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+				$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+				$this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
+				$this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
+				$this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
+				try {
+					$this->db->execute();
+					echo "true";
+				} catch (\Throwable $th) {
+					echo "false";
+				}
+			}
+		}
+	}
 }

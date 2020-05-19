@@ -94,8 +94,8 @@ class controller_etudiant
 
 	public function getPubMyUser()
 	{
-		$issets=isset($_POST['idUser']) && isset($_POST['id_typeUser']) &&isset($_POST['typeUser']) ;
-		if ( $issets) {
+		$issets = isset($_POST['idUser']) && isset($_POST['id_typeUser']) && isset($_POST['typeUser']);
+		if ($issets) {
 			$resaltArray = array();
 			$user = new controller_user();
 			$userInfo = $user->getInfoUser($_POST['id_typeUser'], $_POST['typeUser']);
@@ -106,8 +106,8 @@ class controller_etudiant
 				publication_etudiant.augmenter, publication_etudiant.typeAugmenter,publication_etudiant.id_user, 
 				publication_etudiant.date, user.typeUser, user.id_typeUser 
 				FROM affichage_groupe , publication_etudiant ,user WHERE publication_etudiant.id_user = user.id and
-				 publication_etudiant.id_user=".$_POST['idUser']." and affichage_groupe.id_publicationEtudiant = publication_etudiant.id 
-				 and affichage_groupe.id_groupe=".$InfoFaculty->id_grp;
+				 publication_etudiant.id_user=" . $_POST['idUser'] . " and affichage_groupe.id_publicationEtudiant = publication_etudiant.id 
+				 and affichage_groupe.id_groupe=" . $InfoFaculty->id_grp;
 			$this->db->query($req);
 			$allPub = $this->db->resultSet();
 			// echo json_encode($allPub);
@@ -191,12 +191,12 @@ class controller_etudiant
 	{
 		if (isset($_POST['id_etudiant'])) {
 			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
-			$req=
-			"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,etudiant.nom ,etudiant.prenom ,
+			$req =
+				"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,etudiant.nom ,etudiant.prenom ,
 			etudiant.image ,groupe.nom_grp , section.nom_sec ,specialite.nom_spec ,specialite.annee 
 			FROM user,etudiant ,historique_etudiant, groupe ,section ,specialite 
-			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id and etudiant.id !=".$_POST['id_etudiant']." 
-			and groupe.id =".$faculty->id_grp." and historique_etudiant.id_etudiant = etudiant.id 
+			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id and etudiant.id !=" . $_POST['id_etudiant'] . " 
+			and groupe.id =" . $faculty->id_grp . " and historique_etudiant.id_etudiant = etudiant.id 
 			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='2019/2020' 
 			and groupe.id_section = section.id and section.id_specialite = specialite.id ;";
 			$this->db->query($req);
@@ -208,16 +208,28 @@ class controller_etudiant
 
 	public function getCherEtudiant()
 	{
-		if ( isset($_POST['id_etudiant']) && isset($_POST['moteDeCHer']) ) {
+		if (isset($_POST['id_etudiant']) && isset($_POST['moteDeCHer'])) {
 			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
-			$req=
-			"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,etudiant.nom ,etudiant.prenom ,
+			$req =
+				"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,etudiant.nom ,etudiant.prenom ,
 			etudiant.image ,groupe.nom_grp , section.nom_sec ,specialite.nom_spec ,specialite.annee 
 			FROM user,etudiant ,historique_etudiant, groupe ,section ,specialite 
-			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id and etudiant.id !=".$_POST['id_etudiant']." 
-			and historique_etudiant.id_etudiant = etudiant.id and etudiant.prenom LIKE '".$_POST['moteDeCHer']."%'
+			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id and etudiant.id !=" . $_POST['id_etudiant'] . " 
+			and historique_etudiant.id_etudiant = etudiant.id and etudiant.prenom LIKE '" . $_POST['moteDeCHer'] . "%'
 			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='2019/2020' 
 			and groupe.id_section = section.id and section.id_specialite = specialite.id ;";
+			$this->db->query($req);
+			$result = $this->db->resultSet();
+			echo json_encode($result);
+		}
+		// echo json_encode($this->faculty->getInformation($_POST['id_etudiant'], '2019/2020'));
+	}
+
+	public function getCherEtudiantForAdmin()
+	{
+		if (isset($_POST['moteDeCHer'])) {
+			$req =
+				"SELECT * FROM etudiant WHERE etudiant.nom LIKE '" . $_POST['moteDeCHer'] . "%';";
 			$this->db->query($req);
 			$result = $this->db->resultSet();
 			echo json_encode($result);
@@ -302,7 +314,7 @@ class controller_etudiant
 			}
 		}
 	}
-	
+
 	public function deletedPubEnregistrees()
 	{
 		$issets = isset($_POST['id_typeUser']) && isset($_POST['idPub']);
@@ -317,6 +329,76 @@ class controller_etudiant
 			} catch (\Throwable $th) {
 				echo false;
 			}
+		}
+	}
+
+	public function getAllEtudiant()
+	{
+		$result = array();
+		$req = "SELECT * FROM `etudiant` ORDER by id  DESC";
+		$this->db->query($req);
+		$result = $this->db->resultSet();
+		echo json_encode($result);
+	}
+
+	public function addEtudiant()
+	{
+		$issets = isset($_POST['matricule']) && isset($_POST['nom'])
+			&& isset($_POST['prenom']) && isset($_POST['passwordInscription']);
+		if ($issets) {
+			$req = "SELECT id FROM `etudiant` where matricule =:matricule";
+			$this->db->query($req);
+			$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+			if($this->db->single() != null){
+             echo "M_NotUnique";
+			}else{
+             $req ="INSERT INTO `etudiant` (`id`, `matricule`, `nom`, `prenom`, `phone`, `email`, `image`, `password_inscription`) 
+			 VALUES (NULL, :matricule, :nom, :prenom, NULL, NULL, NULL, :passwordInscription);" ;
+			 $this->db->query($req);
+			 $this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+			 $this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
+			 $this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
+			 $this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
+			 try {
+				$this->db->execute();
+				echo "true";
+			} catch (\Throwable $th) {
+				echo "false";
+			}
+			}
+			
+		}
+	}
+
+	public function modiferInfoEtudiant()
+	{
+		$issets = isset($_POST['id']) && isset($_POST['matricule']) && isset($_POST['nom'])
+			&& isset($_POST['prenom']) && isset($_POST['passwordInscription']);
+		if ($issets) {
+			$req = "SELECT id FROM `etudiant` where matricule =:matricule and id != :id ";
+			$this->db->query($req);
+			$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+			if($this->db->single() != null){
+             echo "M_NotUnique";
+			}else{
+             $req ="UPDATE `etudiant` SET `matricule` = :matricule, `nom` = :nom,
+			  `prenom` = :prenom, `password_inscription` = :passwordInscription 
+			  WHERE `etudiant`.`id` = :id;" ;
+			 $this->db->query($req);
+			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+			 $this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+			 $this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
+			 $this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
+			 $this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
+			 try {
+				$this->db->execute();
+				echo "true";
+			} catch (\Throwable $th) {
+				echo "false";
+			}
+			}
+			
 		}
 	}
 }

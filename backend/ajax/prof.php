@@ -1,7 +1,6 @@
 <?php
 
 include "../includes/autoloader.inc.php";
-
 if (isset($_POST['but'])) {
     $prof = new controller_prof();
     switch ($_POST['but']) {
@@ -10,6 +9,18 @@ if (isset($_POST['but'])) {
             break;
         case 'insert-pub-Enregistrees':
             $prof->insertPubEnregistrees();
+            break;
+        case 'get-all-prof-for-admin':
+            $prof->getAllProfForAdmin();
+            break;
+        case 'get-cher-prof-for-admin':
+            $prof->getCherProfForAdmin();
+            break;
+        case 'add-prof':
+            $prof->addProf();
+            break;
+        case 'modifer-info-prof':
+            $prof->modiferInfoProf();
             break;
         case 'get-my-pub':
             $prof->getMyPub();

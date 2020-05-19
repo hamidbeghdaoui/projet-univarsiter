@@ -49,6 +49,15 @@ class controller_faculty
         return $this->db->resultSet();
     }
 
+    public  function getAllSpicForAdmin()
+    {
+        $req = "SELECT  specialite.id ,specialite.nom_spec ,specialite.annee ,specialite.id_profResponsable 
+        ,prof.matricule ,prof.nom ,prof.prenom FROM specialite , prof 
+        WHERE specialite.id_profResponsable = prof.id ORDER by id  DESC;";
+        $this->db->query($req);
+        return $this->db->resultSet();
+    }
+
     public  function getAllSpicProf($idPof, $annee)
     {
         $req = "SELECT specialite.id ,specialite.nom_spec ,specialite.annee 
@@ -110,7 +119,7 @@ class controller_faculty
                     'nom_grp' => $val->nom_grp,
                     'nom_sec' => $val->nom_sec
                 ];
-                array_push( $arrayGrp, $ar);
+                array_push($arrayGrp, $ar);
             }
             $arrayMain = [
                 'id_spec' => $value->id,
@@ -136,6 +145,75 @@ class controller_faculty
             return true;
         } catch (Exception $e) {
             return false;
+        }
+    }
+
+    public function getCherSpec()
+    {
+        if (isset($_POST['moteDeCHer'])) {
+            $req =
+                "SELECT  specialite.id ,specialite.nom_spec ,specialite.annee ,specialite.id_profResponsable 
+                ,prof.matricule ,prof.nom ,prof.prenom FROM specialite , prof 
+                WHERE specialite.id_profResponsable = prof.id 
+                and specialite.nom_spec LIKE '" . $_POST['moteDeCHer'] . "%';";
+            $this->db->query($req);
+            $result = $this->db->resultSet();
+            echo json_encode($result);
+        }
+    }
+
+    public function addSpec()
+    {
+        $issets = isset($_POST['nom_spec']) && isset($_POST['annee']) && isset($_POST['id_profResponsable']);
+        if ($issets) {
+            $req = "SELECT id FROM `specialite` where nom_spec =:nom_spec";
+            $this->db->query($req);
+            $this->db->bind(":nom_spec",  strip_tags(trim($_POST['nom_spec'])));
+            if ($this->db->single() != null) {
+                echo "M_NotUnique";
+            } else {
+                $req = "INSERT INTO `specialite` (`id`, `nom_spec`, `annee`, `id_profResponsable`) 
+     VALUES (NULL, :nom_spec, :annee, :id_profResponsable);";
+                $this->db->query($req);
+                $this->db->bind(":nom_spec",  strip_tags(trim($_POST['nom_spec'])));
+                $this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+                $this->db->bind(":id_profResponsable",  strip_tags(trim($_POST['id_profResponsable'])));
+                try {
+                    $this->db->execute();
+                    echo "true";
+                } catch (\Throwable $th) {
+                    echo "false";
+                }
+            }
+        }
+    }
+
+    public function modiferInfoSpic()
+    {
+        $issets = isset($_POST['id']) && isset($_POST['nom_spec'])
+            && isset($_POST['annee']) && isset($_POST['id_profResponsable']);
+        if ($issets) {
+            $req = "SELECT id FROM `specialite` where nom_spec =:nom_spec and id != :id ";
+            $this->db->query($req);
+            $this->db->bind(":nom_spec",  strip_tags(trim($_POST['nom_spec'])));
+            $this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+            if ($this->db->single() != null) {
+                echo "M_NotUnique";
+            } else {
+                $req = "UPDATE `specialite` SET `nom_spec` = :nom_spec, `annee` = :annee,
+                `id_profResponsable` = :id_profResponsable WHERE `specialite`.`id` = :id;";
+                $this->db->query($req);
+                $this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+                $this->db->bind(":nom_spec",  strip_tags(trim($_POST['nom_spec'])));
+                $this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+                $this->db->bind(":id_profResponsable",  strip_tags(trim($_POST['id_profResponsable'])));
+                try {
+                    $this->db->execute();
+                    echo "true";
+                } catch (\Throwable $th) {
+                    echo "false";
+                }
+            }
         }
     }
 }

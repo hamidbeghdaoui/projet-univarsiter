@@ -8,6 +8,15 @@ if (isset($_POST['but'])) {
         case 'publication-Etudiant':
             $etudiant->AjouterPublication();
             break;
+        case 'get-all-etudiant':
+            $etudiant->getAllEtudiant();
+            break;
+        case 'add-etudiant':
+            $etudiant->addEtudiant();
+            break;
+        case 'modifer-info-etudiant':
+            $etudiant->modiferInfoEtudiant();
+            break;
         case 'get-pub':
             $etudiant->getPub();
             break;
@@ -34,6 +43,9 @@ if (isset($_POST['but'])) {
             break;
         case 'cher-Etudiant':
             $etudiant->getCherEtudiant();
+            break;
+        case 'get-cher-etudiant-for-admin':
+            $etudiant->getCherEtudiantForAdmin();
             break;
         case 'cher-prof':
             if (isset($_POST['moteDeCHer'])) {
