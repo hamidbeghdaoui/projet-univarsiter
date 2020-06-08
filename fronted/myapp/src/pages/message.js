@@ -4,6 +4,7 @@ import TypeFilePosible from "./../helpers/typeFilePosible";
 import ValidURL from "./../helpers/validURL";
 import Alert from "./../helpers/alert";
 import ItemMessageChate from "./../components/itemMessageChate";
+import HOST from "./../helpers/host";
 class Message extends Component {
 
 
@@ -34,7 +35,7 @@ class Message extends Component {
 
   //---------------------------------------------contact server----------------------------------------
   getMessageEnvoyeRecepteur = async () => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/message.php";
+    const API_PATH =  HOST + "/project/backend/ajax/message.php";
     var sessionUser = JSON.parse(localStorage.getItem('user') || null);
     for (; ;) {
       if (this.state.stopConactedServer) break;
@@ -71,7 +72,7 @@ class Message extends Component {
 
       if (this.state.POST.file) {
         // --------------------------------- Download the image and return name Image ----------------------
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/UploadFile.php";
+        const API_PATH =  HOST + "/project/backend/ajax/UploadFile.php";
         const fd = new FormData();
         fd.append('fileChate', this.state.POST.file);
 
@@ -85,20 +86,20 @@ class Message extends Component {
           .then(result => {
             console.log(result.data);
             // -----------------Edit information ---------------------
-            if(result.data != false){
-               this.funAxios(result.data , this.state.POST.typeMessage);
-            }else{
-                this.setState({
-                  error: "error",
-                  alert: {
-                    color: 'danger',
-                    title: 'ERREUR',
-                    subject: "Une erreur s'est produite lors de l'envoi du fichier",
-              
-                  }
-                });
+            if (result.data != false) {
+              this.funAxios(result.data, this.state.POST.typeMessage);
+            } else {
+              this.setState({
+                error: "error",
+                alert: {
+                  color: 'danger',
+                  title: 'ERREUR',
+                  subject: "Une erreur s'est produite lors de l'envoi du fichier",
+
+                }
+              });
             }
-            
+
 
 
           })
@@ -115,7 +116,7 @@ class Message extends Component {
   }
 
   funAxios = (message, type) => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/message.php";
+    const API_PATH =  HOST + "/project/backend/ajax/message.php";
     var sessionUser = JSON.parse(localStorage.getItem('user') || null);
     axios({
       method: 'post',
@@ -154,7 +155,7 @@ class Message extends Component {
           <div className="small text-gray-600 w-100">
             <div className="float-left">
               <span className="float-left btn" onClick={this.funStopConactedServer}><i className="fas fa-arrow-left text-muted "></i></span>
-              {(this.props.itemMessage.image != null) ? <img className="img-profile rounded-circle" src={"http://127.0.0.1/project/backend/file/user/" + this.props.itemMessage.image} width="40" height="40" /> :
+              {(this.props.itemMessage.image != null) ? <img className="img-profile rounded-circle" src={ HOST + "/project/backend/file/user/" + this.props.itemMessage.image} width="40" height="40" /> :
                 <span className="imageUserChate float-left">
                   {this.props.itemMessage.prenom.charAt(0).toUpperCase()}
                 </span>
@@ -208,7 +209,7 @@ class Message extends Component {
   funChangeInputFile = e => {
 
     try {
-      if (TypeFilePosible(e.target.files[0].type ,'file')) {
+      if (TypeFilePosible(e.target.files[0].type, 'file')) {
         this.setState({
           POST: {
             but: 'send-message',
@@ -241,8 +242,8 @@ class Message extends Component {
   }
 
   funChangeInputSendMessage = e => {
-    let typeMessage ='text';
-    if(ValidURL(e.target.value)) typeMessage = 'line';
+    let typeMessage = 'text';
+    if (ValidURL(e.target.value)) typeMessage = 'line';
     this.setState({
       POST: {
         but: 'send-message',
@@ -257,7 +258,7 @@ class Message extends Component {
     this.setState({
       stopConactedServer: true,
     });
-   await this.sleep(10) ;
+    await this.sleep(10);
     this.props.FunNavChangeBoolChate();
   }
 

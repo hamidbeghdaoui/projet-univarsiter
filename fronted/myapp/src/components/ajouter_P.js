@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import Spinner from "./../helpers/spinner";
 import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 
 
 import axios from "axios";
@@ -37,7 +38,7 @@ class Ajouter_P extends Component {
     //---------------------------------------------contact server----------------------------------------
 
     getListeALLProf = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         this.setState({
             spinnerCher: true
         });
@@ -62,7 +63,7 @@ class Ajouter_P extends Component {
     };
 
     getCherProf = (mote) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         this.setState({
             spinnerCher: true
         });
@@ -89,7 +90,7 @@ class Ajouter_P extends Component {
 
     AddProf = () => {
         if (this.state.matricule && this.state.nom && this.state.prenom && this.state.passwordInscription) {
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+            const API_PATH = HOST + "/project/backend/ajax/prof.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -146,7 +147,7 @@ class Ajouter_P extends Component {
 
     modiferInfoProf = () => {
         if (this.state.matricule && this.state.id && this.state.nom && this.state.prenom && this.state.passwordInscription) {
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+            const API_PATH = HOST + "/project/backend/ajax/prof.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -211,12 +212,12 @@ class Ajouter_P extends Component {
                 </span>
                 </div>
                 <div className="mb-4  text-right pt-3 pr-3">
-                        <button type="button" className="btn btn-outline-success py-2 mb-3" data-toggle="modal" data-target=".exampleModal"
-                            onClick={() => this.funChangeTypeModal('ajouter')}>
-                            <i className="fas fa-1x fa-plus ml-1 mr-3"></i>
+                    <button type="button" className="btn btn-outline-success py-2 mb-3" data-toggle="modal" data-target=".exampleModal"
+                        onClick={() => this.funChangeTypeModal('ajouter')}>
+                        <i className="fas fa-1x fa-plus ml-1 mr-3"></i>
                             Ajouter une prof
                         </button>
-                    </div>
+                </div>
                 <div className="w-100 my-5" >
                     <div className="col-12 mt-3">
                         <div className="input-group mb-2">

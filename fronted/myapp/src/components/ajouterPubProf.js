@@ -4,6 +4,7 @@ import TypeFilePosible from "../helpers/typeFilePosible";
 import ValidURL from "../helpers/validURL";
 import Spinner from "../helpers/spinner";
 import Alert from "../helpers/alert";
+import HOST from "./../helpers/host";
 
 class AjouterPubProf extends Component {
 
@@ -41,7 +42,7 @@ class AjouterPubProf extends Component {
     //---------------------------------------------contact server----------------------------------------
     getPlus = () => {
         console.log('qsdzdzss');
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH =  HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         this.setState({
             componentFaculty: 'spinner',
@@ -85,7 +86,7 @@ class AjouterPubProf extends Component {
     }
 
     getAllspicProf = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH =  HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         axios({
             method: 'post',
@@ -126,7 +127,7 @@ class AjouterPubProf extends Component {
 
             if (this.state.POST.file) {
                 // --------------------------------- Download the image and return name Image ----------------------
-                const API_PATH = "http://127.0.0.1/project/backend/ajax/UploadFile.php";
+                const API_PATH =  HOST + "/project/backend/ajax/UploadFile.php";
                 const fd = new FormData();
                 fd.append('filePublication', this.state.POST.file);
 
@@ -174,7 +175,7 @@ class AjouterPubProf extends Component {
     }
 
     funAxios = (Content, TypeContent) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH =  HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         axios({
@@ -238,7 +239,7 @@ class AjouterPubProf extends Component {
                     );
                 case 'group':
                     return (
-                        <option key={item.id} value={item.id} > {item.annee + " ( " + item.nom_spec + " ) , Section (" + item.nom_sec + ") , group(" + item.nom_grp + ")"} </option>
+                        <option key={item.id} value={item.id} > {item.annee + " ( " + item.nom_spec + " ) , Section (" + item.nom_sec + ") , group(" + item.nom_grp + ") "} </option>
                     );
 
 
@@ -294,7 +295,7 @@ class AjouterPubProf extends Component {
                                 </div>
                                 {this.state.POST.typePublication === 'group' ?
                                     <div className="col-2 text-right">
-                                        <button className="btn btn-danger" type="button" onClick={this.getAllspicProf}>Anuller</button>
+                                        <button className="btn btn-danger" type="button" onClick={()=>this.funCLickBtnAnuler()}>Anuller</button>
                                     </div>
                                     :
                                     <div className="col-2 text-right">
@@ -447,6 +448,14 @@ class AjouterPubProf extends Component {
                 id_typePublication: this.state.POST.id_typePublication
             }
         });
+    }
+
+    funCLickBtnAnuler=()=>{
+        this.setState({
+           resultFaculty: [] 
+        });
+        this.getAllspicProf();
+        
     }
 
 

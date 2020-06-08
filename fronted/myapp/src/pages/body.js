@@ -15,7 +15,7 @@ class Body extends Component {
   funPageEtudiantOuProf = () => {
     switch (this.props.ComponentPage) {
       case "Accueil":
-        return (<Accueil />);
+        return (<Accueil NotAffectation={this.props.NotAffectation} />);
       case "Ajouter Publication":
         return (<AjouterPublication />);
       case "Mes Publications":

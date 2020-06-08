@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import HOST from "./../helpers/host";
 
 
 const ItemListeMessage = (props) => {
@@ -9,7 +10,7 @@ const ItemListeMessage = (props) => {
             <a className="dropdown-item d-flex align-items-center btn" key={item.idMessage}
                 onClick={() => props.FunGetItemMessage(item)}>
                 <div className="dropdown-list-image mr-3">
-                    {(item.image != null) ? <img className="rounded-circle" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60" height="60" alt="" /> :
+                    {(item.image != null) ? <img className="rounded-circle" src={HOST + "/project/backend/file/user/" + item.image} width="60" height="60" alt="" /> :
                         <div className="img-profile rounded-circle ImageUser pt-2 h1">
                             {item.prenom.charAt(0).toUpperCase()}
                         </div>

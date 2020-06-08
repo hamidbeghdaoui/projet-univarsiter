@@ -8,11 +8,13 @@ class controller_etudiant
 
 	private $db;
 	private $faculty;
+	private $thisYear;
 
 	function __construct()
 	{
 		$this->db = new model_database();
 		$this->faculty = new controller_faculty();
+		$this->thisYear = new controller_historique();
 	}
 
 	/**
@@ -23,35 +25,39 @@ class controller_etudiant
 		if (isset($_POST['id_typeUser'])) {
 			$resaltArray = array();
 			$user = new controller_user();
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
-			$req = "SELECT affichage_groupe.id_publicationEtudiant, publication_etudiant.pub, publication_etudiant.augmenter,
-			publication_etudiant.typeAugmenter,publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
-			FROM affichage_groupe, publication_etudiant, user WHERE affichage_groupe.id_groupe =" . $InfoFaculty->id_grp . " 
-			and affichage_groupe.id_publicationEtudiant = publication_etudiant.id and user.id = publication_etudiant.id_user
-			ORDER by publication_etudiant.id DESC";
-			$this->db->query($req);
-			$allPub = $this->db->resultSet();
-			// echo json_encode($allPub );
-			foreach ($allPub as $key => $value) {
-				$userInfo = $user->getInfoUser($value->id_typeUser, $value->typeUser);
-				$resalt = [
-					'id_pub' => $value->id_publicationEtudiant,
-					'pub' => $value->pub,
-					'augmenter' => $value->augmenter,
-					'typeAugmenter' => $value->typeAugmenter,
-					'date' => $value->date,
-					'idUser' => $value->id_user,
-					'idTypeUser' => $value->id_typeUser,
-					'typeUser' => $value->typeUser,
-					'nom' => $userInfo->nom,
-					'prenom' => $userInfo->prenom,
-					'phone' => $userInfo->phone,
-					'email' => $userInfo->email,
-					'image' => $userInfo->image,
-				];
-				array_push($resaltArray, $resalt);
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], $this->thisYear->getThisYear()->id);
+			if (empty($InfoFaculty)) {
+				echo json_encode("notAffecter");
+			} else {
+				$req = "SELECT affichage_groupe.id_publicationEtudiant, publication_etudiant.pub, publication_etudiant.augmenter,
+		      	publication_etudiant.typeAugmenter,publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
+			    FROM affichage_groupe, publication_etudiant, user WHERE affichage_groupe.id_groupe =" . $InfoFaculty->id_grp . " 
+			    and affichage_groupe.id_publicationEtudiant = publication_etudiant.id and user.id = publication_etudiant.id_user
+			    ORDER by publication_etudiant.id DESC";
+				$this->db->query($req);
+				$allPub = $this->db->resultSet();
+				// echo json_encode($allPub );
+				foreach ($allPub as $key => $value) {
+					$userInfo = $user->getInfoUser($value->id_typeUser, $value->typeUser);
+					$resalt = [
+						'id_pub' => $value->id_publicationEtudiant,
+						'pub' => $value->pub,
+						'augmenter' => $value->augmenter,
+						'typeAugmenter' => $value->typeAugmenter,
+						'date' => $value->date,
+						'idUser' => $value->id_user,
+						'idTypeUser' => $value->id_typeUser,
+						'typeUser' => $value->typeUser,
+						'nom' => $userInfo->nom,
+						'prenom' => $userInfo->prenom,
+						'phone' => $userInfo->phone,
+						'email' => $userInfo->email,
+						'image' => $userInfo->image,
+					];
+					array_push($resaltArray, $resalt);
+				}
+				echo json_encode($resaltArray);
 			}
-			echo json_encode($resaltArray);
 		}
 	}
 
@@ -60,46 +66,50 @@ class controller_etudiant
 		if (isset($_POST['id_typeUser']) && isset($_POST['id_User'])) {
 			$resaltArray = array();
 			$user = new controller_user();
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
-			$req = "SELECT affichage_groupe.id_publicationEtudiant, publication_etudiant.pub, publication_etudiant.augmenter,
-			publication_etudiant.typeAugmenter,publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
-			FROM affichage_groupe, publication_etudiant, user WHERE affichage_groupe.id_groupe =" . $InfoFaculty->id_grp . " 
-			and affichage_groupe.id_publicationEtudiant = publication_etudiant.id and user.id = publication_etudiant.id_user
-            and user.id = " . $_POST['id_User'] . " ORDER by publication_etudiant.id  DESC";
-			$this->db->query($req);
-			$allPub = $this->db->resultSet();
-			// echo json_encode($allPub );
-			foreach ($allPub as $key => $value) {
-				$userInfo = $user->getInfoUser($value->id_typeUser, $value->typeUser);
-				$resalt = [
-					'id_pub' => $value->id_publicationEtudiant,
-					'pub' => $value->pub,
-					'augmenter' => $value->augmenter,
-					'typeAugmenter' => $value->typeAugmenter,
-					'date' => $value->date,
-					'idUser' => $value->id_user,
-					'idTypeUser' => $value->id_typeUser,
-					'typeUser' => $value->typeUser,
-					'nom' => $userInfo->nom,
-					'prenom' => $userInfo->prenom,
-					'phone' => $userInfo->phone,
-					'email' => $userInfo->email,
-					'image' => $userInfo->image,
-				];
-				array_push($resaltArray, $resalt);
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], $this->thisYear->getThisYear()->id);
+			if (empty($InfoFaculty)) {
+				echo json_encode($resaltArray);
+			} else {
+				$req = "SELECT affichage_groupe.id_publicationEtudiant, publication_etudiant.pub, publication_etudiant.augmenter,
+		     	publication_etudiant.typeAugmenter,publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
+			    FROM affichage_groupe, publication_etudiant, user WHERE affichage_groupe.id_groupe =" . $InfoFaculty->id_grp . " 
+			    and affichage_groupe.id_publicationEtudiant = publication_etudiant.id and user.id = publication_etudiant.id_user
+                and user.id = " . $_POST['id_User'] . " ORDER by publication_etudiant.id  DESC";
+				$this->db->query($req);
+				$allPub = $this->db->resultSet();
+				// echo json_encode($allPub );
+				foreach ($allPub as $key => $value) {
+					$userInfo = $user->getInfoUser($value->id_typeUser, $value->typeUser);
+					$resalt = [
+						'id_pub' => $value->id_publicationEtudiant,
+						'pub' => $value->pub,
+						'augmenter' => $value->augmenter,
+						'typeAugmenter' => $value->typeAugmenter,
+						'date' => $value->date,
+						'idUser' => $value->id_user,
+						'idTypeUser' => $value->id_typeUser,
+						'typeUser' => $value->typeUser,
+						'nom' => $userInfo->nom,
+						'prenom' => $userInfo->prenom,
+						'phone' => $userInfo->phone,
+						'email' => $userInfo->email,
+						'image' => $userInfo->image,
+					];
+					array_push($resaltArray, $resalt);
+				}
+				echo json_encode($resaltArray);
 			}
-			echo json_encode($resaltArray);
 		}
 	}
 
 	public function getPubMyUser()
 	{
-		$issets = isset($_POST['idUser']) && isset($_POST['id_typeUser']) && isset($_POST['typeUser']);
+		$issets = isset($_POST['idUser']) && isset($_POST['id_typeUser']) && isset($_POST['typeUser']) && isset($_POST['id_etudiant']);
 		if ($issets) {
 			$resaltArray = array();
 			$user = new controller_user();
 			$userInfo = $user->getInfoUser($_POST['id_typeUser'], $_POST['typeUser']);
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_etudiant'], $this->thisYear->getThisYear()->id);
 			//  echo json_encode($userInfo);
 			$req =
 				"SELECT publication_etudiant.id as id_publicationEtudiant, publication_etudiant.pub, 
@@ -138,7 +148,7 @@ class controller_etudiant
 		if (isset($_POST['id_typeUser'])) {
 			$resaltArray = array();
 			$user = new controller_user();
-			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
+			$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], $this->thisYear->getThisYear()->id);
 			$req = "SELECT publication_etudiant.id as id_publicationEtudiant , publication_etudiant.pub, publication_etudiant.augmenter,
 			publication_etudiant.typeAugmenter, publication_etudiant.id_user, publication_etudiant.date, user.typeUser, user.id_typeUser 
 			FROM pub_enregistrees_etudiant, publication_etudiant, user WHERE 
@@ -174,13 +184,13 @@ class controller_etudiant
 	public function getAllProfEtudiant()
 	{
 		if (isset($_POST['id_etudiant'])) {
-			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
+			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], $this->thisYear->getThisYear()->id);
 			$prof = new controller_prof();
 			$result = $prof->getAllProfGroup(
 				$faculty->id_grp,
-				'2019/2020',
+				$this->thisYear->getThisYear()->id,
 				$faculty->id_spec,
-				1
+				$this->thisYear->getThisYear()->semestre
 			);
 			echo json_encode($result);
 		}
@@ -190,14 +200,14 @@ class controller_etudiant
 	public function getMyEtudiant()
 	{
 		if (isset($_POST['id_etudiant'])) {
-			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
+			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], $this->thisYear->getThisYear()->id);
 			$req =
 				"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,etudiant.nom ,etudiant.prenom ,
 			etudiant.image ,groupe.nom_grp , section.nom_sec ,specialite.nom_spec ,specialite.annee 
 			FROM user,etudiant ,historique_etudiant, groupe ,section ,specialite 
 			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id and etudiant.id !=" . $_POST['id_etudiant'] . " 
 			and groupe.id =" . $faculty->id_grp . " and historique_etudiant.id_etudiant = etudiant.id 
-			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='2019/2020' 
+			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='" . $this->thisYear->getThisYear()->id . "' 
 			and groupe.id_section = section.id and section.id_specialite = specialite.id ;";
 			$this->db->query($req);
 			$result = $this->db->resultSet();
@@ -209,14 +219,14 @@ class controller_etudiant
 	public function getCherEtudiant()
 	{
 		if (isset($_POST['id_etudiant']) && isset($_POST['moteDeCHer'])) {
-			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], '2019/2020');
+			$faculty = $this->faculty->getInformation($_POST['id_etudiant'], $this->thisYear->getThisYear()->id);
 			$req =
 				"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,etudiant.nom ,etudiant.prenom ,
 			etudiant.image ,groupe.nom_grp , section.nom_sec ,specialite.nom_spec ,specialite.annee 
 			FROM user,etudiant ,historique_etudiant, groupe ,section ,specialite 
 			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id and etudiant.id !=" . $_POST['id_etudiant'] . " 
 			and historique_etudiant.id_etudiant = etudiant.id and etudiant.prenom LIKE '" . $_POST['moteDeCHer'] . "%'
-			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='2019/2020' 
+			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='" . $this->thisYear->getThisYear()->id . "' 
 			and groupe.id_section = section.id and section.id_specialite = specialite.id ;";
 			$this->db->query($req);
 			$result = $this->db->resultSet();
@@ -263,7 +273,7 @@ class controller_etudiant
 			try {
 				$this->db->execute();
 				$idPub = $this->db->LastId();
-				$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], '2019/2020');
+				$InfoFaculty = $this->faculty->getInformation($_POST['id_typeUser'], $this->thisYear->getThisYear()->id);
 				switch ($_POST['typePublication']) {
 					case 'spécialité':
 						foreach ($this->faculty->getAllSectionSpic($InfoFaculty->id_spec) as $key => $value) {
@@ -349,24 +359,23 @@ class controller_etudiant
 			$req = "SELECT id FROM `etudiant` where matricule =:matricule";
 			$this->db->query($req);
 			$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
-			if($this->db->single() != null){
-             echo "M_NotUnique";
-			}else{
-             $req ="INSERT INTO `etudiant` (`id`, `matricule`, `nom`, `prenom`, `phone`, `email`, `image`, `password_inscription`) 
-			 VALUES (NULL, :matricule, :nom, :prenom, NULL, NULL, NULL, :passwordInscription);" ;
-			 $this->db->query($req);
-			 $this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
-			 $this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
-			 $this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
-			 $this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
-			 try {
-				$this->db->execute();
-				echo "true";
-			} catch (\Throwable $th) {
-				echo "false";
+			if ($this->db->single() != null) {
+				echo "M_NotUnique";
+			} else {
+				$req = "INSERT INTO `etudiant` (`id`, `matricule`, `nom`, `prenom`, `phone`, `email`, `image`, `password_inscription`) 
+			 VALUES (NULL, :matricule, :nom, :prenom, NULL, NULL, NULL, :passwordInscription);";
+				$this->db->query($req);
+				$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+				$this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
+				$this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
+				$this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
+				try {
+					$this->db->execute();
+					echo "true";
+				} catch (\Throwable $th) {
+					echo "false";
+				}
 			}
-			}
-			
 		}
 	}
 
@@ -379,26 +388,108 @@ class controller_etudiant
 			$this->db->query($req);
 			$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
 			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
-			if($this->db->single() != null){
-             echo "M_NotUnique";
-			}else{
-             $req ="UPDATE `etudiant` SET `matricule` = :matricule, `nom` = :nom,
+			if ($this->db->single() != null) {
+				echo "M_NotUnique";
+			} else {
+				$req = "UPDATE `etudiant` SET `matricule` = :matricule, `nom` = :nom,
 			  `prenom` = :prenom, `password_inscription` = :passwordInscription 
-			  WHERE `etudiant`.`id` = :id;" ;
-			 $this->db->query($req);
+			  WHERE `etudiant`.`id` = :id;";
+				$this->db->query($req);
+				$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+				$this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
+				$this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
+				$this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
+				$this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
+				try {
+					$this->db->execute();
+					echo "true";
+				} catch (\Throwable $th) {
+					echo "false";
+				}
+			}
+		}
+	}
+
+	public function affectationGetAllEtudiantGroup()
+	{
+		if (isset($_POST['idGrp']) && isset($_POST['annee'])) {
+			$result = array();
+			$req = "SELECT etudiant.id ,etudiant.matricule , etudiant.nom ,etudiant.prenom 
+			,etudiant.phone ,etudiant.email  
+			FROM `historique_etudiant` , etudiant WHERE historique_etudiant.id_etudiant = etudiant.id 
+			and  historique_etudiant.annee = :annee and historique_etudiant.id_groupe = :idGrp ;";
+			$this->db->query($req);
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$result = $this->db->resultSet();
+			echo json_encode($result);
+		}
+	}
+
+	public function affectationGetAllEtudiant()
+	{
+		if (isset($_POST['idGrp']) && isset($_POST['annee'])) {
+			$result = array();
+			$req = "SELECT `id`,`matricule`,`nom`,`prenom` FROM `etudiant` WHERE etudiant.id not in (SELECT etudiant.id   
+			FROM `historique_etudiant` , etudiant WHERE historique_etudiant.id_etudiant = etudiant.id 
+			and  historique_etudiant.annee = :annee and historique_etudiant.id_groupe = :idGrp);";
+			$this->db->query($req);
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$result = $this->db->resultSet();
+			echo json_encode($result);
+		}
+	}
+
+	public function affecterEtudiantInGroup()
+	{
+		if (isset($_POST['id']) && isset($_POST['idGrp']) && isset($_POST['annee'])) {
+			$result = array();
+			$req = "INSERT INTO `historique_etudiant` (`id`, `id_etudiant`, `id_groupe`, `annee`)
+			 VALUES (NULL, :id, :idGrp, :annee);";
+			$this->db->query($req);
 			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
-			 $this->db->bind(":matricule",  strip_tags(trim($_POST['matricule'])));
-			 $this->db->bind(":nom",  strip_tags(trim($_POST['nom'])));
-			 $this->db->bind(":prenom",  strip_tags(trim($_POST['prenom'])));
-			 $this->db->bind(":passwordInscription",  strip_tags(trim($_POST['passwordInscription'])));
-			 try {
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			try {
 				$this->db->execute();
 				echo "true";
 			} catch (\Throwable $th) {
 				echo "false";
 			}
+		}
+	}
+
+	public function supprimerEtudiantInGroup()
+	{
+		if (isset($_POST['id']) && isset($_POST['idGrp']) && isset($_POST['annee'])) {
+			$result = array();
+			$req = "DELETE FROM `historique_etudiant` WHERE id_etudiant = :id and id_groupe = :idGrp and annee = :annee;";
+			$this->db->query($req);
+			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			try {
+				$this->db->execute();
+				echo "true";
+			} catch (\Throwable $th) {
+				echo "false";
 			}
-			
+		}
+	}
+
+	public function affectationGetCher()
+	{
+		if (isset($_POST['moteDeCHer']) && isset($_POST['idGrp']) && isset($_POST['annee'])) {
+			$result = array();
+			$req = "SELECT `id`,`matricule`,`nom`,`prenom` FROM `etudiant` WHERE etudiant.id not in (SELECT etudiant.id   
+			FROM `historique_etudiant` , etudiant WHERE historique_etudiant.id_etudiant = etudiant.id 
+			and  historique_etudiant.annee = :annee and historique_etudiant.id_groupe = :idGrp) and etudiant.matricule LIKE '" . $_POST['moteDeCHer'] . "%'";
+			$this->db->query($req);
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$result = $this->db->resultSet();
+			echo json_encode($result);
 		}
 	}
 }

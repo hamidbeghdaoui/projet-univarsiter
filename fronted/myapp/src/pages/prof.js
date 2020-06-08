@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import ProfForEtudiant from "./../components/profForEtudiant";
 import ProfForProf from "./../components/profForProf";
+import ProfForAdmin from "./../components/profForAdmin";
 
 
 class Prof extends Component {
@@ -12,6 +13,8 @@ class Prof extends Component {
                 return (<ProfForEtudiant />);
             case 'prof':
                 return (<ProfForProf />);
+            case 'admin':
+                return (<ProfForAdmin />);
         }
     }
 

@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import Spinner from "../helpers/spinner";
 import Alert from "../helpers/alert";
+import HOST from "./../helpers/host";
 
 
 import axios from "axios";
@@ -38,7 +39,7 @@ class Ajouter_A extends Component {
     //---------------------------------------------contact server----------------------------------------
 
     getListeALLAdmin = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/admin.php";
+        const API_PATH = HOST + "/project/backend/ajax/admin.php";
         this.setState({
             spinnerCher: true
         });
@@ -63,7 +64,7 @@ class Ajouter_A extends Component {
     };
 
     getCherAdmin = (mote) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/admin.php";
+        const API_PATH = HOST + "/project/backend/ajax/admin.php";
         this.setState({
             spinnerCher: true
         });
@@ -90,7 +91,7 @@ class Ajouter_A extends Component {
 
     AddAdmin = () => {
         if (this.state.matricule && this.state.nom && this.state.prenom && this.state.role && this.state.passwordInscription) {
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/admin.php";
+            const API_PATH = HOST + "/project/backend/ajax/admin.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -149,7 +150,7 @@ class Ajouter_A extends Component {
 
     modiferInfoAdmin = () => {
         if (this.state.matricule && this.state.id && this.state.nom && this.state.prenom && this.state.role && this.state.passwordInscription) {
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/admin.php";
+            const API_PATH = HOST + "/project/backend/ajax/admin.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,

@@ -1,15 +1,13 @@
 import React, { Fragment, Component } from 'react';
 import ItemListeProf from "./itemListeProf";
-import Publication from "./publication";
 import ItemListeResultCher from "./itemListeResultCher";
 import Spinner from "./../helpers/spinner";
 import Message from "./../pages/message";
 import HOST from "./../helpers/host";
-
 import axios from "axios";
 
 
-class ProfForEtudiant extends Component {
+class ProfForAdmin extends Component {
     // ----------------------------------------- data----------------------------------------
     state = {
         component: "spinner",
@@ -25,21 +23,19 @@ class ProfForEtudiant extends Component {
 
     //---------------------------------------------When the page loads----------------------------------------
     componentDidMount() {
-        this.getMyProf();
+        this.getAllProf();
     }
 
     //---------------------------------------------contact server----------------------------------------
-    getMyProf = () => {
-        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
-        var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+    getAllProf = () => {
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         // console.log(sessionUser);
         axios({
             method: 'post',
             url: `${API_PATH}`,
             headers: { 'content-type': 'application/json' },
             data: {
-                but: 'get-all-prof-etudiant',
-                id_etudiant: sessionUser.id_typeUser,
+                but: 'get-prof-fpr-admin',
             }
         })
             .then(result => {
@@ -55,8 +51,7 @@ class ProfForEtudiant extends Component {
     };
 
     getResaultCher = (moteDeCHer) => {
-        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
-        var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         // console.log(sessionUser);
         this.setState({
             spinnerCher: true
@@ -66,7 +61,7 @@ class ProfForEtudiant extends Component {
             url: `${API_PATH}`,
             headers: { 'content-type': 'application/json' },
             data: {
-                but: 'cher-prof',
+                but: 'cher-prof-for-admin',
                 moteDeCHer: moteDeCHer,
             }
         })
@@ -81,32 +76,7 @@ class ProfForEtudiant extends Component {
 
     };
 
-    getMyProfPub = (idUser, id_typeUser, typeUser) => {
-        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
-        var sessionUser = JSON.parse(localStorage.getItem('user') || null);
-        // console.log(sessionUser);
 
-        axios({
-            method: 'post',
-            url: `${API_PATH}`,
-            headers: { 'content-type': 'application/json' },
-            data: {
-                but: 'get-all-pub-myUser',
-                idUser: idUser,
-                id_typeUser: id_typeUser,
-                typeUser: typeUser,
-                id_etudiant: sessionUser.id_typeUser
-            }
-        })
-            .then(result => {
-                this.setState({
-                    listPub: result.data
-                });
-                console.log(result.data);
-            })
-            .catch(error => this.setState({ error: error.message }));
-
-    };
     // ----------------------------------------------- Component --------------------------------------
     FunComponentMain = () => {
         return (
@@ -114,7 +84,7 @@ class ProfForEtudiant extends Component {
             <Fragment>
 
                 <div className="w-100 my-5 row">
-                    <h2 className="text-muted  col-6 text-left ml-3">Mon Prof :</h2>
+                    <h2 className="text-muted  col-6 text-left ml-3">Tous le Prof :</h2>
                     <button className="btn border-secondary ml-auto" type="button" onClick={this.funReturnPageCherch} >Rechercher un prof</button>
                 </div>
                 {
@@ -126,51 +96,6 @@ class ProfForEtudiant extends Component {
                         </Fragment>
                         : <ItemListeProf funpushPageChate={this.funpushPageChate} funSetInfoProfPub={this.funSetInfoProfPub} rech={this.state.rech} listProf={this.state.listProf} />
                 }
-            </Fragment>
-        );
-    }
-
-    FunComponentPub = () => {
-        const { infoProfPub } = this.state;
-        return (
-            <Fragment>
-                <div className="card text-white bg-info mb-3">
-                    <div className="card-header">
-                        <div className="w-100">
-                            <div className="">
-                                <span className="float-left btn" onClick={() => this.funReturnPageProf()} >
-                                    <i className="fas fa-arrow-left fa-2x text-light mt-2 "></i>
-                                </span>
-                                <div className="float-left ">
-                                    {
-                                        infoProfPub.image != null
-                                            ?
-                                            <div>
-                                                <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + infoProfPub.image} width="60"
-                                                    height="60" />
-                                                <span className=" small ">{infoProfPub.nom + " " + infoProfPub.prenom}</span>
-
-                                            </div>
-                                            :
-                                            <div className="row pl-2">
-                                                <div className=" ImageUser pt-2 h1 bg-light mx-1">
-                                                    {infoProfPub.prenom.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span className=" col small text-left pt-3 pl-0  ">{infoProfPub.nom + " " + infoProfPub.prenom}</span>
-                                            </div>
-                                    }
-
-                                </div>
-                                <div className="float-right mt-3 mr-2 small">{"Prof (" + infoProfPub.role + "): " + infoProfPub.annee + "(" + infoProfPub.nom_spec + ") " + infoProfPub.nom_module}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {this.state.listPub.length === 0 ?
-                    <div className="text-center m-5 p-5">
-                        Il n'y a aucun publication à afficher
-                         </div>
-                    : <Publication pubEnreg={false} listPub={this.state.listPub} />}
             </Fragment>
         );
     }
@@ -248,7 +173,7 @@ class ProfForEtudiant extends Component {
             infoProfPub: info,
             component: "pub"
         });
-        this.getMyProfPub(info.idUser, info.id_typeUser, info.typeUser);
+        this.getAllProfPub(info.idUser, info.id_typeUser, info.typeUser);
         console.log(info);
     }
 
@@ -295,4 +220,4 @@ class ProfForEtudiant extends Component {
 
 }
 
-export default ProfForEtudiant;
+export default ProfForAdmin;

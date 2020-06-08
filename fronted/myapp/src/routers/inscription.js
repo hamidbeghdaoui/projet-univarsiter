@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./../helpers/spinner";
 import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 class Inscription extends Component {
 
     // ----------------------------------------- data----------------------------------------
@@ -27,7 +28,7 @@ class Inscription extends Component {
     //---------------------------------------------When the page loads----------------------------------------
     componentDidMount() {
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
-        if(sessionUser != null)document.getElementById("home").click();
+        if (sessionUser != null) document.getElementById("home").click();
     }
 
     //---------------------------------------------contact server----------------------------------------
@@ -38,7 +39,7 @@ class Inscription extends Component {
             this.setState({
                 component: "spinner"
             });
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+            const API_PATH =  HOST + "/project/backend/ajax/user.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -68,7 +69,7 @@ class Inscription extends Component {
                             component: "inscription",
                             error: null
                         });
-                        
+
                         //   setDataUser('isInscription' ,{'hamid':'walid'});
                         localStorage.setItem('isInscription', JSON.stringify(result.data));
                         document.getElementById("Confirmation-Inscription").click();

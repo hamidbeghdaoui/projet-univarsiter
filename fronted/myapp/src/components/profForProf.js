@@ -1,10 +1,9 @@
 import React, { Fragment, Component } from 'react';
 import ItemListeProf from "./itemListeProf";
-import Publication from "./publication";
 import ItemListeResultCher from "./itemListeResultCher";
 import Spinner from "./../helpers/spinner";
 import Message from "./../pages/message";
-
+import HOST from "./../helpers/host";
 import axios from "axios";
 
 
@@ -29,7 +28,7 @@ class ProfForProf extends Component {
 
     //---------------------------------------------contact server----------------------------------------
     getMyProf = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         axios({
@@ -54,7 +53,7 @@ class ProfForProf extends Component {
     };
 
     getResaultCher = (moteDeCHer) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         this.setState({
@@ -121,7 +120,7 @@ class ProfForProf extends Component {
                 </div>
                 <h2 className="text-muted text-center my-5">Result Rechercher :</h2>
                 {
-                    this.state.spinnerCher ? <Spinner /> : <ItemListeResultCher  funpushPageChate={this.funpushPageChate} resultRech={this.state.resultRech} />
+                    this.state.spinnerCher ? <Spinner /> : <ItemListeResultCher funpushPageChate={this.funpushPageChate} resultRech={this.state.resultRech} />
                 }
 
             </Fragment>
@@ -130,8 +129,8 @@ class ProfForProf extends Component {
 
     chate = () => {
         return (
-            <Message  FunNavChangeBoolChate={this.funReturnPageProf} itemMessage={this.state.itemMessage}
-                 />
+            <Message FunNavChangeBoolChate={this.funReturnPageProf} itemMessage={this.state.itemMessage}
+            />
         );
     }
 

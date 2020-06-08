@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import HOST from "./../helpers/host";
 const ItemListeResultCher = (props) => {
     const { resultRech } = props;
     const Liste = resultRech.map(item => {
@@ -12,7 +13,7 @@ const ItemListeResultCher = (props) => {
                                     item.image != null
                                         ?
                                         <div>
-                                            <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60"
+                                            <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + item.image} width="60"
                                                 height="60" />
                                             <span className=" small ">{item.nom + " " + item.prenom}</span>
 
@@ -28,7 +29,7 @@ const ItemListeResultCher = (props) => {
 
                             </div>
                             <div className="float-right mt-3 mr-2 small">
-                                <a className="btn btn-dark mt-1 mx-1 text-light size-1" onClick={()=>props.funpushPageChate(item)}>
+                                <a className="btn btn-dark mt-1 mx-1 text-light size-1" onClick={() => props.funpushPageChate(item)}>
                                     Envoyer un message
                                 </a>
                             </div>

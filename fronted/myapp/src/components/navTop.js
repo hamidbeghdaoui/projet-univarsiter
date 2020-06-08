@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import MesaageNavTop from "./../components/mesaageNavTop";
+import HOST from "./../helpers/host";
 import axios from "axios";
 class NavTop extends Component {
 
@@ -17,7 +18,7 @@ class NavTop extends Component {
 
   //---------------------------------------------contact server----------------------------------------
   getMessage = async () => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/message.php";
+    const API_PATH = HOST + "/project/backend/ajax/message.php";
     var sessionUser = JSON.parse(localStorage.getItem('user') || null);
     await this.sleep(5000);
     for (; ;) {
@@ -53,6 +54,7 @@ class NavTop extends Component {
   // -------------------------------------------- render ------------------------------------------
   render() {
     const { nom, prenom, image } = this.props.user;
+    console.log(this.props.user);
     return (
       <Fragment>
         {/* <!-- Topbar --> */}
@@ -104,7 +106,7 @@ class NavTop extends Component {
             <li className="nav-item dropdown no-arrow">
               <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span className="mr-2 d-none d-lg-inline text-gray-600 small">{prenom} {nom}</span>
-                {(image != null) ? <img className="img-profile rounded-circle" src={"http://127.0.0.1/project/backend/file/user/" + image} width="60" height="60" /> :
+                {(image != null) ? <img className="img-profile rounded-circle" src={HOST + "/project/backend/file/user/" + image} width="60" height="60" /> :
                   <div className="img-profile rounded-circle logoUser">
                     {prenom.charAt(0).toUpperCase()}
                   </div>

@@ -1,9 +1,8 @@
 import React, { Fragment, Component } from 'react';
-import ItemListeProf from "./../components/itemListeProf";
 import Publication from "./../components/publication";
-import ItemListeResultCher from "../components/itemListeResultCher";
 import Spinner from "./../helpers/spinner";
 import Message from "./../pages/message";
+import HOST from "./../helpers/host";
 
 import axios from "axios";
 
@@ -25,16 +24,16 @@ class L_Administration extends Component {
 
     //---------------------------------------------contact server----------------------------------------
     getMyAdmin = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        let data = { but: 'get-all-admin', typeUser: sessionUser.typeUser };
+        if (sessionUser.typeUser === "admin") data = { but: 'get-all-admin', typeUser: sessionUser.typeUser, idAdmin: sessionUser.id_typeUser };
         // console.log(sessionUser);
         axios({
             method: 'post',
             url: `${API_PATH}`,
             headers: { 'content-type': 'application/json' },
-            data: {
-                but: 'get-all-admin',
-            }
+            data: data
         })
             .then(result => {
                 console.log(result.data);
@@ -54,12 +53,12 @@ class L_Administration extends Component {
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         let API_PATH = "";
         switch (sessionUser.typeUser) {
-          case "etudiant":
-            API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
-            break;
-          case "prof":
-            API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
-            break;
+            case "etudiant":
+                API_PATH = HOST + "/project/backend/ajax/etudiant.php";
+                break;
+            case "prof":
+                API_PATH = HOST + "/project/backend/ajax/prof.php";
+                break;
         }
         // console.log(sessionUser);
         axios({
@@ -71,6 +70,7 @@ class L_Administration extends Component {
                 idUser: idUser,
                 id_typeUser: id_typeUser,
                 typeUser: typeUser,
+                id_etudiant: sessionUser.id_typeUser
             }
         })
             .then(result => {
@@ -86,7 +86,7 @@ class L_Administration extends Component {
 
     ItemListeAdmin = () => {
 
-       const itemListe = this.state.listAdmin.map(item => {
+        const itemListe = this.state.listAdmin.map(item => {
             return (
                 <div className="card text-white bg-danger mb-3" key={item.idUser}>
                     <div className="card-header">
@@ -97,7 +97,7 @@ class L_Administration extends Component {
                                         item.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60"
+                                                <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + item.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{item.nom + " " + item.prenom}</span>
 
@@ -122,10 +122,11 @@ class L_Administration extends Component {
                                 Envoyer un message
                            </a>
 
-                            <a className="btn btn-dark mt-1 mx-1 text-light size-1"
-                                onClick={() => this.funSetInfoProfPub(item)}>
-                                Les publications
-                           </a>
+                            {JSON.parse(localStorage.getItem('user') || null).typeUser === "admin" ? "" :
+                                <a className="btn btn-dark mt-1 mx-1 text-light size-1"
+                                    onClick={() => this.funSetInfoProfPub(item)}>
+                                    Les publications
+                           </a>}
                         </div>
                     </div>
                 </div>
@@ -172,7 +173,7 @@ class L_Administration extends Component {
                                         infoAdminPub.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + infoAdminPub.image} width="60"
+                                                <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + infoAdminPub.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{infoAdminPub.nom + " " + infoAdminPub.prenom}</span>
 
@@ -187,7 +188,7 @@ class L_Administration extends Component {
                                     }
 
                                 </div>
-                                <div className="float-right mt-3 mr-2 small">{"admin (" + infoAdminPub.role + ") " }</div>
+                                <div className="float-right mt-3 mr-2 small">{"admin (" + infoAdminPub.role + ") "}</div>
                             </div>
                         </div>
                     </div>

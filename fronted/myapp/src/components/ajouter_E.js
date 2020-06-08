@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import Spinner from "./../helpers/spinner";
 import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 
 
 import axios from "axios";
@@ -37,7 +38,7 @@ class Ajouter_E extends Component {
     //---------------------------------------------contact server----------------------------------------
 
     getListeALLEtudiant = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
         this.setState({
             spinnerCher: true
         });
@@ -62,7 +63,7 @@ class Ajouter_E extends Component {
     };
 
     getCherEtudiant = (mote) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
         this.setState({
             spinnerCher: true
         });
@@ -89,7 +90,7 @@ class Ajouter_E extends Component {
 
     AddEtudiant = () => {
         if (this.state.matricule && this.state.nom && this.state.prenom && this.state.passwordInscription) {
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+            const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -101,8 +102,7 @@ class Ajouter_E extends Component {
                     prenom: this.state.prenom,
                     passwordInscription: this.state.passwordInscription
                 }
-            })
-                .then(result => {
+            }) .then(result => {
                     console.log(result.data);
                     if (result.data === "M_NotUnique") {
                         this.setState({
@@ -146,7 +146,7 @@ class Ajouter_E extends Component {
 
     modiferInfoEtudiant = () => {
         if (this.state.matricule && this.state.id && this.state.nom && this.state.prenom && this.state.passwordInscription) {
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+            const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -467,9 +467,7 @@ class Ajouter_E extends Component {
         });
         console.log(email);
     }
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+
 
     funChangeInputPasswordInscription = (e) => {
         this.setState({
@@ -488,6 +486,11 @@ class Ajouter_E extends Component {
         }
 
     }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     // -------------------------------- Alert -----------------------------------------
     funHidenAlert = async (time) => {
         await this.sleep(time);

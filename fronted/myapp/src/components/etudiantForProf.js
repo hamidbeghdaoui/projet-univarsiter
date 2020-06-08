@@ -3,6 +3,7 @@ import Publication from "./publication";
 import Spinner from "./../helpers/spinner";
 import Message from "./../pages/message";
 import axios from "axios";
+import HOST from "./../helpers/host";
 
 
 class EtudiantForProf extends Component {
@@ -27,7 +28,7 @@ class EtudiantForProf extends Component {
 
     //---------------------------------------------contact server----------------------------------------
     getMyEtudiant = (Group) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         axios({
             method: 'post',
             url: `${API_PATH}`,
@@ -51,7 +52,7 @@ class EtudiantForProf extends Component {
     };
 
     getAllGroupProf = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         axios({
@@ -76,7 +77,7 @@ class EtudiantForProf extends Component {
     };
 
     getResaultCher = (moteDeCHer) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+        const API_PATH = HOST + "/project/backend/ajax/prof.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         this.setState({
@@ -158,7 +159,7 @@ class EtudiantForProf extends Component {
                                         item.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60"
+                                                <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + item.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{item.nom + " " + item.prenom}</span>
 
@@ -204,7 +205,7 @@ class EtudiantForProf extends Component {
                                         item.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60"
+                                                <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + item.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{item.nom + " " + item.prenom}</span>
 
@@ -269,7 +270,7 @@ class EtudiantForProf extends Component {
                     this.ItemListeSpec()
                     :
                     <div className="text-center text-muted m-5 p-5">
-                    Il n'y a aucun specialeté à afficher
+                        Il n'y a aucun specialeté à afficher
                      </div>
                 }
             </div>
@@ -309,7 +310,7 @@ class EtudiantForProf extends Component {
                         this.ItemListeEtudiant()
                         :
                         <div className="text-center text-muted m-5 p-5">
-                        Il n'y a aucun etudiant à afficher
+                            Il n'y a aucun etudiant à afficher
                          </div>
                     }
                 </div>
@@ -334,7 +335,7 @@ class EtudiantForProf extends Component {
                                         infoEtudiantPub.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + infoEtudiantPub.image} width="60"
+                                                <img className="rounded-circle mr-1" src={HOST + "/project/backend/file/user/" + infoEtudiantPub.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{infoEtudiantPub.nom + " " + infoEtudiantPub.prenom}</span>
 

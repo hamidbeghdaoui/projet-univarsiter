@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import axios from "axios";
 import TypeFilePosible from "./../helpers/typeFilePosible";
-import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 
 
 
@@ -24,10 +24,10 @@ class Publication extends Component {
         let API_PATH = "";
         switch (sessionUser.typeUser) {
             case "etudiant":
-                API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+                API_PATH = HOST + "/project/backend/ajax/etudiant.php";
                 break;
             case "prof":
-                API_PATH = "http://127.0.0.1/project/backend/ajax/prof.php";
+                API_PATH = HOST + "/project/backend/ajax/prof.php";
                 break;
         }
         console.log(sessionUser);
@@ -57,12 +57,12 @@ class Publication extends Component {
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         let API_PATH = "";
         switch (sessionUser.typeUser) {
-          case "etudiant":
-            API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
-            break;
-          case "prof":
-            API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
-            break;
+            case "etudiant":
+                API_PATH = HOST + "/project/backend/ajax/etudiant.php";
+                break;
+            case "prof":
+                API_PATH = HOST + "/project/backend/ajax/prof.php";
+                break;
         }
         console.log(sessionUser);
         axios({
@@ -100,7 +100,7 @@ class Publication extends Component {
                                     <span className="imageUserPub mx-1 float-left ">
                                         {item.prenom.charAt(0).toUpperCase()}
                                     </span>
-                                    : <img className="rounded-circle mx-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="40" height="40" />}
+                                    : <img className="rounded-circle mx-1" src={HOST + "/project/backend/file/user/" + item.image} width="40" height="40" />}
                                 <span className="btn p-0 mt-1">{item.nom + " " + item.prenom}</span>
                             </div>
                             <div className="float-right mt-1"> {item.typeUser} </div>
@@ -157,7 +157,7 @@ class Publication extends Component {
                                     <span className="imageUserPub mx-1 float-left ">
                                         {item.prenom.charAt(0).toUpperCase()}
                                     </span>
-                                    : <img className="rounded-circle mx-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="40" height="40" />}
+                                    : <img className="rounded-circle mx-1" src={HOST + "/project/backend/file/user/" + item.image} width="40" height="40" />}
                                 <span className="btn p-0 mt-1">{item.nom + " " + item.prenom}</span>
                             </div>
                             <div className="float-right mt-1"> {item.typeUser} </div>
@@ -165,11 +165,11 @@ class Publication extends Component {
                         <div className="card-body text-secondary">
                             <p className="card-text">{item.pub}</p>
                             <div className="text-center">
-                                <img src={"http://127.0.0.1/project/backend/file/file publication/" + item.augmenter} width="650" className="img-fluid" alt="Responsive image" />
+                                <img src={HOST + "/project/backend/file/file publication/" + item.augmenter} width="650" className="img-fluid" alt="Responsive image" />
 
                             </div>
                             <div className="text-center">
-                                <a className="btn btn-dark mt-1 mx-1 text-light size-1" href={"http://127.0.0.1/project/backend/file/file publication/" + item.augmenter} download>
+                                <a className="btn btn-dark mt-1 mx-1 text-light size-1" href={HOST + "/project/backend/file/file publication/" + item.augmenter} download>
                                     <i className="fas fa-download fa-sm text-white-50 mr-2"></i>
                                       Téléchargez
                                 </a>
@@ -222,7 +222,7 @@ class Publication extends Component {
                                     <span className="imageUserPub mx-1 float-left ">
                                         {item.prenom.charAt(0).toUpperCase()}
                                     </span>
-                                    : <img className="rounded-circle mx-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="40" height="40" />}
+                                    : <img className="rounded-circle mx-1" src={HOST + "/project/backend/file/user/" + item.image} width="40" height="40" />}
                                 <span className="btn p-0 mt-1">{item.nom + " " + item.prenom}</span>
                             </div>
                             <div className="float-right mt-1"> {item.typeUser} </div>
@@ -235,7 +235,7 @@ class Publication extends Component {
                                 </h1>
                             </div>
                             <div className="text-center">
-                                <a className="btn btn-dark mt-1 mx-1 text-light size-1" href={"http://127.0.0.1/project/backend/file/file publication/" + item.augmenter} download>
+                                <a className="btn btn-dark mt-1 mx-1 text-light size-1" href={HOST + "/project/backend/file/file publication/" + item.augmenter} download>
                                     <i className="fas fa-download fa-sm text-white-50 mr-2"></i>
                                   Téléchargez
                             </a>
@@ -289,7 +289,7 @@ class Publication extends Component {
                                     <span className="imageUserPub mx-1 float-left ">
                                         {item.prenom.charAt(0).toUpperCase()}
                                     </span>
-                                    : <img className="rounded-circle mx-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="40" height="40" />}
+                                    : <img className="rounded-circle mx-1" src={HOST + "/project/backend/file/user/" + item.image} width="40" height="40" />}
                                 <span className="btn p-0 mt-1">{item.nom + " " + item.prenom}</span>
                             </div>
                             <div className="float-right mt-1"> {item.typeUser} </div>

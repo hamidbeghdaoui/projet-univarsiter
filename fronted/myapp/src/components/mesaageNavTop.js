@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import HOST from "./../helpers/host";
 
 
 const MessageNavTop = (props) => {
@@ -7,9 +8,9 @@ const MessageNavTop = (props) => {
         return (
             <div key={item.idMessage}>
                 <a className={"dropdown-item d-flex align-items-center " + (item.statut === 'non' ? "bg-statut-Message" : " ")}
-                 onClick={()=>props.FunGetItemMessage(item)}  >
+                    onClick={() => props.FunGetItemMessage(item)}  >
                     <div className="dropdown-list-image mr-3">
-                        {(item.image != null) ? <img className="img-profile rounded-circle" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60" height="60" /> :
+                        {(item.image != null) ? <img className="img-profile rounded-circle" src={ HOST + "/project/backend/file/user/" + item.image} width="60" height="60" /> :
                             <div className="img-profile rounded-circle imageUser-dropdown pt-2">
                                 {item.prenom.charAt(0).toUpperCase()}
                             </div>

@@ -2,6 +2,9 @@ import React, { Component, Fragment } from 'react';
 import Publication from "./../components/publication";
 import axios from "axios";
 import Spinner from "./../helpers/spinner";
+import HOST from "./../helpers/host";
+import { Link } from "react-router-dom";
+
 
 class Accueil extends Component {
   // ----------------------------------------- data----------------------------------------
@@ -27,10 +30,10 @@ class Accueil extends Component {
     let API_PATH = "";
     switch (sessionUser.typeUser) {
       case "etudiant":
-        API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
+        API_PATH = HOST + "/project/backend/ajax/etudiant.php";
         break;
       case "prof":
-        API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
+        API_PATH = HOST + "/project/backend/ajax/prof.php";
         break;
     }
 
@@ -45,12 +48,14 @@ class Accueil extends Component {
       }
     })
       .then(result => {
-        console.log(result.data);
-        this.setState({
-          component: "publication",
-          listPub: result.data
-
-        });
+        if (result.data === "notAffecter") {
+          this.props.NotAffectation();
+        } else {
+          this.setState({
+            component: "publication",
+            listPub: result.data ,
+          });
+        }
       })
       .catch(error => this.setState({ error: error.message }));
 
@@ -62,7 +67,7 @@ class Accueil extends Component {
         <div className="text-center m-5 p-5">
           Il n'y a aucun publication à afficher
         </div>
-        : 
+        :
         <Publication getPub={this.getPub} pubEnreg={false} listPub={this.state.listPub} />
     );
   }

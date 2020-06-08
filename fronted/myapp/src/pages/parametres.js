@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Spinner from "./../helpers/spinner";
 import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 class Parametres extends Component {
   // ----------------------------------------- data----------------------------------------
   state = {
@@ -41,7 +42,7 @@ class Parametres extends Component {
 
   //---------------------------------------------contact server----------------------------------------
   getinfo = () => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+    const API_PATH =  HOST + "/project/backend/ajax/user.php";
     var sessionUser = JSON.parse(localStorage.getItem('user') || null);
     console.log(sessionUser);
     axios({
@@ -99,7 +100,7 @@ class Parametres extends Component {
     if (email && phone) {
       if (image) {
         // --------------------------------- Download the image and return name Image ----------------------
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/UploadFile.php";
+        const API_PATH =  HOST + "/project/backend/ajax/UploadFile.php";
         const fd = new FormData();
         fd.append('imageUser', image);
         axios({
@@ -129,7 +130,7 @@ class Parametres extends Component {
     } else {
       this.setState({
         error: 'videInput',
-        alertShow:'POST1',
+        alertShow: 'POST1',
         alert: {
           color: 'warning',
           title: 'Attention',
@@ -142,7 +143,7 @@ class Parametres extends Component {
   }
 
   funAxios = (image) => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+    const API_PATH =  HOST + "/project/backend/ajax/user.php";
     axios({
       method: 'post',
       url: `${API_PATH}`,
@@ -160,7 +161,7 @@ class Parametres extends Component {
         if (result.data) {
           this.setState({
             error: "Resalt",
-            alertShow:'POST1',
+            alertShow: 'POST1',
             alert: {
               color: 'success',
               title: 'Resalt',
@@ -188,7 +189,7 @@ class Parametres extends Component {
           }
         });
       } else {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+        const API_PATH =  HOST + "/project/backend/ajax/user.php";
         axios({
           method: 'post',
           url: `${API_PATH}`,
@@ -218,7 +219,7 @@ class Parametres extends Component {
     } else {
       this.setState({
         error: 'videInput',
-        alertShow:'POST2',
+        alertShow: 'POST2',
         alert: {
           color: 'warning',
           title: 'Attention',

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./../helpers/spinner";
 import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 class Login extends Component {
 
 
@@ -26,7 +27,7 @@ class Login extends Component {
     //---------------------------------------------When the page loads----------------------------------------
     componentDidMount() {
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
-        if(sessionUser != null)document.getElementById("home").click();
+        if (sessionUser != null) document.getElementById("home").click();
     }
 
     //---------------------------------------------contact server----------------------------------------
@@ -37,7 +38,8 @@ class Login extends Component {
             this.setState({
                 component: "spinner"
             });
-            const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+            const API_PATH = HOST + "/project/backend/ajax/user.php";
+            console.log(API_PATH);
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
@@ -63,7 +65,7 @@ class Login extends Component {
                     } else {
                         console.log(result.data);
                         localStorage.setItem('user', JSON.stringify(result.data));
-                         document.getElementById("home").click();
+                        document.getElementById("home").click();
                     }
 
                 })

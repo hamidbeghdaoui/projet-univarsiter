@@ -3,6 +3,7 @@ import Publication from "./publication";
 import Spinner from "./../helpers/spinner";
 import Message from "./../pages/message";
 import axios from "axios";
+import HOST from "./../helpers/host";
 
 
 class EtudiantForEtudiant extends Component {
@@ -25,7 +26,7 @@ class EtudiantForEtudiant extends Component {
 
     //---------------------------------------------contact server----------------------------------------
     getMyEtudiant = () => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+        const API_PATH =  HOST + "/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         console.log(sessionUser);
         axios({
@@ -50,7 +51,7 @@ class EtudiantForEtudiant extends Component {
     };
 
     getResaultCher = (moteDeCHer) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+        const API_PATH =  HOST + "/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         this.setState({
@@ -78,7 +79,7 @@ class EtudiantForEtudiant extends Component {
     };
 
     getMyEtudiantPub = (idUser, id_typeUser, typeUser) => {
-        const API_PATH = "http://127.0.0.1/project/backend/ajax/etudiant.php";
+        const API_PATH =  HOST + "/project/backend/ajax/etudiant.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         axios({
@@ -90,6 +91,7 @@ class EtudiantForEtudiant extends Component {
                 idUser: idUser,
                 id_typeUser: id_typeUser,
                 typeUser: typeUser,
+                id_etudiant: sessionUser.id_typeUser
             }
         })
             .then(result => {
@@ -116,7 +118,7 @@ class EtudiantForEtudiant extends Component {
                                         item.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60"
+                                                <img className="rounded-circle mr-1" src={ HOST + "/project/backend/file/user/" + item.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{item.nom + " " + item.prenom}</span>
 
@@ -167,7 +169,7 @@ class EtudiantForEtudiant extends Component {
                                         item.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + item.image} width="60"
+                                                <img className="rounded-circle mr-1" src={ HOST + "/project/backend/file/user/" + item.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{item.nom + " " + item.prenom}</span>
 
@@ -267,7 +269,7 @@ class EtudiantForEtudiant extends Component {
                                         infoEtudiantPub.image != null
                                             ?
                                             <div>
-                                                <img className="rounded-circle mr-1" src={"http://127.0.0.1/project/backend/file/user/" + infoEtudiantPub.image} width="60"
+                                                <img className="rounded-circle mr-1" src={ HOST + "/project/backend/file/user/" + infoEtudiantPub.image} width="60"
                                                     height="60" />
                                                 <span className=" small ">{infoEtudiantPub.nom + " " + infoEtudiantPub.prenom}</span>
 

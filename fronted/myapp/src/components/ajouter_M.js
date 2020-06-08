@@ -7,21 +7,23 @@ import HOST from "./../helpers/host";
 import axios from "axios";
 
 
-class Ajouter_S extends Component {
+class Ajouter_M extends Component {
     // ----------------------------------------- data----------------------------------------
     state = {
         compenet: "spinner",
         formModale: 'ajouter',
-        spinnerCherSpec: false,
-        spinnerSearchProf: false,
+        spinnerSearchSpec: false,
+        spinnerSearchModule: false,
         inputcher: '',
         listSpec: [],
-        listProf: [],
+        listModule: [],
         id: '',
-        nom_spec: '',
-        annee: 'L2',
-        id_profResponsable: '',
-        profResponsable: '',
+        nom_module: '',
+        fondamentale: 'oui',
+        coef: '',
+        semestre: '1',
+        id_specialite: '',
+        specialite: '',
         error: null,
         alert: {
             color: 'warning',
@@ -32,15 +34,15 @@ class Ajouter_S extends Component {
 
     //---------------------------------------------When the page loads----------------------------------------
     componentDidMount() {
-        this.getListeALLSpec();
+        this.getListeALLModule();
     }
 
     //---------------------------------------------contact server----------------------------------------
 
     getListeALLSpec = () => {
-        const API_PATH =  HOST + "/project/backend/ajax/faculty.php";
+        const API_PATH = HOST + "/project/backend/ajax/faculty.php";
         this.setState({
-            spinnerCherSpec: true
+            spinnerSearchSpec: true
         });
         axios({
             method: 'post',
@@ -52,32 +54,60 @@ class Ajouter_S extends Component {
         })
             .then(result => {
                 this.setState({
+                    compenet: 'home',
                     listSpec: result.data,
+                    spinnerSearchModule: false,
+                    spinnerSearchSpec: false
                 });
-                this.getListeALLProf();
+                console.log(result.data);
             })
             .catch(error => this.setState({ error: error.message }));
 
     };
 
-    getListeALLProf = () => {
-        const API_PATH =  HOST + "/project/backend/ajax/prof.php";
+    getListeALLModule = () => {
+        const API_PATH = HOST + "/project/backend/ajax/faculty.php";
         this.setState({
-            spinnerCherSpec: true
+            spinnerSearchModule: true
         });
         axios({
             method: 'post',
             url: `${API_PATH}`,
             headers: { 'content-type': 'application/json' },
             data: {
-                but: 'get-all-prof-for-admin',
+                but: 'get-all-module-for-admin',
+            }
+        })
+            .then(result => {
+                this.setState({
+                    listModule: result.data,
+                });
+                this.getListeALLSpec();
+                console.log(result.data);
+            })
+            .catch(error => this.setState({ error: error.message }));
+
+    };
+
+    getCherModule = (mote) => {
+        const API_PATH = HOST + "/project/backend/ajax/faculty.php";
+        this.setState({
+            spinnerSearchModule: true
+        });
+        axios({
+            method: 'post',
+            url: `${API_PATH}`,
+            headers: { 'content-type': 'application/json' },
+            data: {
+                but: 'get-cher-module',
+                moteDeCHer: mote
             }
         })
             .then(result => {
                 this.setState({
                     compenet: 'home',
-                    listProf: result.data,
-                    spinnerCherSpec: false
+                    listModule: result.data,
+                    spinnerSearchModule: false
                 });
                 console.log(result.data);
             })
@@ -86,9 +116,9 @@ class Ajouter_S extends Component {
     };
 
     getCherSpec = (mote) => {
-        const API_PATH =  HOST + "/project/backend/ajax/faculty.php";
+        const API_PATH = HOST + "/project/backend/ajax/faculty.php";
         this.setState({
-            spinnerCherSpec: true
+            spinnerSearchSpec: true
         });
         axios({
             method: 'post',
@@ -103,53 +133,30 @@ class Ajouter_S extends Component {
                 this.setState({
                     compenet: 'home',
                     listSpec: result.data,
-                    spinnerCherSpec: false
+                    spinnerSearchSpec: false
                 });
                 console.log(result.data);
             })
             .catch(error => this.setState({ error: error.message }));
-
     };
 
-    getCherProf = (mote) => {
-        const API_PATH =  HOST + "/project/backend/ajax/prof.php";
-        this.setState({
-            spinnerSearchProf: true
-        });
-        axios({
-            method: 'post',
-            url: `${API_PATH}`,
-            headers: { 'content-type': 'application/json' },
-            data: {
-                but: 'get-cher-prof-for-admin',
-                moteDeCHer: mote
-            }
-        })
-            .then(result => {
-                this.setState({
-                    compenet: 'home',
-                    listProf: result.data,
-                    spinnerSearchProf: false
-                });
-                console.log(result.data);
-            })
-            .catch(error => this.setState({ error: error.message }));
-
-    };
-
-    AddSpec = () => {
-        if (this.state.nom_spec && this.state.annee && this.state.profResponsable) {
-            const API_PATH =  HOST + "/project/backend/ajax/faculty.php";
+    AddModule = () => {
+        console.log(this.state);
+        if (this.state.nom_module && this.state.fondamentale && this.state.coef
+            && this.state.semestre && this.state.id_specialite) {
+            const API_PATH = HOST + "/project/backend/ajax/faculty.php";
             console.log(this.state.id_profResponsable);
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
                 headers: { 'content-type': 'application/json' },
                 data: {
-                    but: 'add-spec',
-                    nom_spec: this.state.nom_spec,
-                    annee: this.state.annee,
-                    id_profResponsable: this.state.id_profResponsable
+                    but: 'add-module',
+                    nom_module: this.state.nom_module,
+                    fondamentale: this.state.fondamentale,
+                    coef: this.state.coef,
+                    semestre: this.state.semestre,
+                    id_specialite: this.state.id_specialite
                 }
             })
                 .then(result => {
@@ -157,7 +164,7 @@ class Ajouter_S extends Component {
                     if (result.data === "M_NotUnique") {
                         this.setState({
                             error: 'notUnique',
-                            nom_spec: ''
+                            nom_module: ''
                         });
                         this.funHidenAlert(3000);
                     }
@@ -175,10 +182,12 @@ class Ajouter_S extends Component {
                     if (result.data === true) {
                         this.setState({
                             id: '',
-                            nom_spec: '',
-                            annee: '',
-                            id_profResponsable: '',
-                            profResponsable: '',
+                            nom_module: '',
+                            fondamentale: 'oui',
+                            coef: '',
+                            semestre: '1',
+                            id_specialite: '',
+                            specialite: '',
                             error: 'false',
                             alert: {
                                 color: 'success',
@@ -186,7 +195,7 @@ class Ajouter_S extends Component {
                                 subject: 'Ajouté avec succès',
                             }
                         });
-                        this.getListeALLSpec();
+                        this.getListeALLModule();
                         this.funHidenAlert(2000);
                     }
                 })
@@ -195,19 +204,22 @@ class Ajouter_S extends Component {
 
     };
 
-    modiferInfoSpec = () => {
-        if (this.state.id && this.state.nom_spec && this.state.annee && this.state.id_profResponsable && this.state.profResponsable) {
-            const API_PATH =  HOST + "/project/backend/ajax/faculty.php";
+    modiferInfoModule = () => {
+        if (this.state.id && this.state.nom_module && this.state.fondamentale && this.state.coef
+            && this.state.semestre && this.state.id_specialite) {
+            const API_PATH = HOST + "/project/backend/ajax/faculty.php";
             axios({
                 method: 'post',
                 url: `${API_PATH}`,
                 headers: { 'content-type': 'application/json' },
                 data: {
-                    but: 'modifer-info-spic',
+                    but: 'modifer-info-module',
                     id: this.state.id,
-                    nom_spec: this.state.nom_spec,
-                    annee: this.state.annee,
-                    id_profResponsable: this.state.id_profResponsable,
+                    nom_module: this.state.nom_module,
+                    fondamentale: this.state.fondamentale,
+                    coef: this.state.coef,
+                    semestre: this.state.semestre,
+                    id_specialite: this.state.id_specialite
                 }
             })
                 .then(result => {
@@ -215,7 +227,7 @@ class Ajouter_S extends Component {
                     if (result.data === "M_NotUnique") {
                         this.setState({
                             error: 'notUnique',
-                            nom_spec: ''
+                            nom_module: ''
                         });
                         this.funHidenAlert(3000);
                     }
@@ -239,7 +251,7 @@ class Ajouter_S extends Component {
                                 subject: 'Modifié',
                             }
                         });
-                        this.getListeALLSpec();
+                        this.getListeALLModule();
                         this.funHidenAlert(2000);
                     }
                 })
@@ -257,37 +269,39 @@ class Ajouter_S extends Component {
                         <i className="fas fa-arrow-left  text-muted mt-2 "></i>
                     </span>
                     <span className=" text-muted h3">
-                        Ajouter des specialite
+                        Ajouter des modules
                 </span>
                 </div>
                 <div className="mb-4  text-right pt-3 pr-3">
                     <button type="button" className="btn btn-outline-success py-2 mb-3" data-toggle="modal" data-target=".exampleModal"
                         onClick={() => this.funChangeTypeModal('ajouter')}>
                         <i className="fas fa-1x fa-plus ml-1 mr-3"></i>
-                            Ajouter une specialite
+                            Ajouter une module
                         </button>
                 </div>
                 <div className="w-100 my-5">
 
                     <div className="col-12 mt-3">
                         <div className="input-group mb-2">
-                            <input type="text" className="form-control" placeholder="Rechercher un specialite"
+                            <input type="text" className="form-control" placeholder="Rechercher un module"
                                 aria-label="Rechercher un enseignant" aria-describedby="button-addon2"
-                                onChange={this.funchangeInputCherchSpec} value={this.state.inputcher} />
+                                onChange={this.funchangeInputCherchModule} value={this.state.inputcher} />
                             <div className="input-group-append">
                                 <button className="btn btn-outline-secondary" type="button" id="button-addon2"><i className="fas fa-search"></i></button>
                             </div>
                         </div>
                         {
-                            this.state.listSpec != null && this.state.listSpec.length != 0 ?
+                            this.state.listModule != null && this.state.listModule.length != 0 ?
                                 <Fragment>
-                                    {this.state.spinnerCherSpec === true ? <Spinner />
-                                        : this.FunComponentListeSpec()}
+                                    {this.state.spinnerSearchModule === true ? <Spinner />
+                                        :
+                                        this.FunComponentListeModule()
+                                    }
                                 </Fragment>
                                 :
                                 <Fragment>
                                     <div className="text-center text-muted m-5 p-5">
-                                        Il n'y a aucun specialite à afficher
+                                        Il n'y a aucun module à afficher
                                     </div>
                                 </Fragment>
                         }
@@ -303,21 +317,22 @@ class Ajouter_S extends Component {
         );
     }
 
-    FunComponentListeSpec = () => {
+    FunComponentListeModule = () => {
         return (
             <Fragment>
                 <table className="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">nom</th>
+                            <th scope="col">semestre</th>
                             <th scope="col">nom specialite</th>
                             <th scope="col">annee</th>
-                            <th scope="col">prof responsable</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            this.itemListSpec()
+                            this.itemListModule()
                         }
                     </tbody>
                 </table>
@@ -333,7 +348,7 @@ class Ajouter_S extends Component {
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title" id="exampleModalLabel">Ajouter un specialite </h5>
+                                    <h5 className="modal-title" id="exampleModalLabel">Ajouter un module </h5>
                                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -342,32 +357,41 @@ class Ajouter_S extends Component {
                                     {(this.state.error === null) ? "" : <Alert alert={this.state.alert} funHidenAlert={this.funHidenAlert} />}
                                     <form>
                                         <div className="form-group">
-                                            <label htmlFor="recipient-name1" className="col-form-label">nom specialite:</label>
+                                            <label htmlFor="recipient-name1" className="col-form-label">nom module:</label>
                                             <input type="text" className="form-control" id="recipient-name1"
-                                                value={this.state.nom_spec} onChange={this.funChangeInputNomSpec} />
+                                                value={this.state.nom_module} onChange={this.funChangeInputNomModule} />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="recipient-name2" className="col-form-label">annee:</label>
-                                            <select className="form-control" value={this.state.annee} onChange={this.funChangeInputAnnee}>
-                                                <option value="L1">L1</option>
-                                                <option value="L2">L2</option>
-                                                <option value="L3">L3</option>
-                                                <option value="M1">M1</option>
-                                                <option value="M2">M2</option>
+                                            <label htmlFor="recipient-name2" className="col-form-label">fondamentale:</label>
+                                            <select className="form-control" value={this.state.fondamentale} onChange={this.funChangeInputFondamentale}>
+                                                <option value="oui">oui</option>
+                                                <option value="non">non</option>
                                             </select>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="recipient-name3" className="col-form-label">prof responsable:</label>
+                                            <label htmlFor="recipient-name321" className="col-form-label">coefition:</label>
+                                            <input type="number" className="form-control" id="recipient-name321"
+                                                value={this.state.coef} onChange={this.funChangeInputCoef} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="recipient-naaame2" className="col-form-label">semestre:</label>
+                                            <select className="form-control" value={this.state.semestre} onChange={this.funChangeInputSemestre}>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="recipient-name3" className="col-form-label">specialite:</label>
                                             <div className="w-100 select-search">
                                                 {
-                                                    this.state.profResponsable ?
+                                                    this.state.specialite ?
                                                         <Fragment>
                                                             <div className="input-group mb-2">
                                                                 <input type="text" className="form-control" id="recipient-nameERw4" disabled
-                                                                    value={this.state.profResponsable} />
+                                                                    value={this.state.specialite} />
                                                                 <div className="input-group-append">
                                                                     <button className="btn btn-outline-danger" type="button" id="button-addon2"
-                                                                        onClick={() => this.funEmptyInputProfResponsable()}>
+                                                                        onClick={() => this.funEmptyInputSpec()}>
                                                                         <i className="fas fa-times"></i></button>
                                                                 </div>
                                                             </div>
@@ -375,13 +399,13 @@ class Ajouter_S extends Component {
                                                         :
                                                         <Fragment>
                                                             <input type="text" className="form-control" id="recipient-na"
-                                                                onChange={this.funchangeInputsearchProf} placeholder="Rechercher un (nom)prof" />
+                                                                onChange={this.funchangeInputsearchspec} placeholder="Rechercher un specialite" />
                                                             <div className="w-100 bg-light div-select-search">
                                                                 {
-                                                                    this.state.listProf != null && this.state.listProf.length != 0 ?
+                                                                    this.state.listSpec != null && this.state.listSpec.length != 0 ?
                                                                         <Fragment>
                                                                             {this.state.spinnerSearchProf === true ? <Spinner />
-                                                                                : this.itemListProf()}
+                                                                                : this.itemListSpec()}
                                                                         </Fragment>
                                                                         :
                                                                         <Fragment>
@@ -401,7 +425,7 @@ class Ajouter_S extends Component {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                    <button type="button" className="btn btn-primary" onClick={() => this.AddSpec()}>Ajouter</button>
+                                    <button type="button" className="btn btn-primary" onClick={() => this.AddModule()}>Ajouter</button>
                                 </div>
                             </div>
                         </div>
@@ -422,32 +446,41 @@ class Ajouter_S extends Component {
                                     {(this.state.error === null) ? "" : <Alert alert={this.state.alert} funHidenAlert={this.funHidenAlert} />}
                                     <form>
                                         <div className="form-group">
-                                            <label htmlFor="recipient-name1" className="col-form-label">nom specialite:</label>
+                                            <label htmlFor="recipient-name1" className="col-form-label">nom module:</label>
                                             <input type="text" className="form-control" id="recipient-name1"
-                                                value={this.state.nom_spec} onChange={this.funChangeInputNomSpec} />
+                                                value={this.state.nom_module} onChange={this.funChangeInputNomModule} />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="recipient-name2" className="col-form-label">annee:</label>
-                                            <select className="form-control" value={this.state.annee} onChange={this.funChangeInputAnnee}>
-                                                <option value="L1">L1</option>
-                                                <option value="L2">L2</option>
-                                                <option value="L3">L3</option>
-                                                <option value="M1">M1</option>
-                                                <option value="M2">M2</option>
+                                            <label htmlFor="recipient-name2" className="col-form-label">fondamentale:</label>
+                                            <select className="form-control" value={this.state.fondamentale} onChange={this.funChangeInputFondamentale}>
+                                                <option value="oui">oui</option>
+                                                <option value="non">non</option>
                                             </select>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="recipient-name3" className="col-form-label">prof responsable:</label>
+                                            <label htmlFor="recipient-name321" className="col-form-label">coefition:</label>
+                                            <input type="number" className="form-control" id="recipient-name321"
+                                                value={this.state.coef} onChange={this.funChangeInputCoef} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="recipient-naaame2" className="col-form-label">semestre:</label>
+                                            <select className="form-control" value={this.state.semestre} onChange={this.funChangeInputSemestre}>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="recipient-name3" className="col-form-label">specialite:</label>
                                             <div className="w-100 select-search">
                                                 {
-                                                    this.state.profResponsable ?
+                                                    this.state.specialite ?
                                                         <Fragment>
                                                             <div className="input-group mb-2">
                                                                 <input type="text" className="form-control" id="recipient-nameERw4" disabled
-                                                                    value={this.state.profResponsable} />
+                                                                    value={this.state.specialite} />
                                                                 <div className="input-group-append">
                                                                     <button className="btn btn-outline-danger" type="button" id="button-addon2"
-                                                                        onClick={() => this.funEmptyInputProfResponsable()}>
+                                                                        onClick={() => this.funEmptyInputSpec()}>
                                                                         <i className="fas fa-times"></i></button>
                                                                 </div>
                                                             </div>
@@ -455,13 +488,13 @@ class Ajouter_S extends Component {
                                                         :
                                                         <Fragment>
                                                             <input type="text" className="form-control" id="recipient-na"
-                                                                onChange={this.funchangeInputsearchProf} placeholder="Rechercher un (nom)prof" />
+                                                                onChange={this.funchangeInputsearchspec} placeholder="Rechercher un specialite" />
                                                             <div className="w-100 bg-light div-select-search">
                                                                 {
-                                                                    this.state.listProf != null && this.state.listProf.length != 0 ?
+                                                                    this.state.listSpec != null && this.state.listSpec.length != 0 ?
                                                                         <Fragment>
                                                                             {this.state.spinnerSearchProf === true ? <Spinner />
-                                                                                : this.itemListProf()}
+                                                                                : this.itemListSpec()}
                                                                         </Fragment>
                                                                         :
                                                                         <Fragment>
@@ -481,7 +514,7 @@ class Ajouter_S extends Component {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                    <button type="button" className="btn btn-success" onClick={() => this.modiferInfoSpec()}>Mdifier</button>
+                                    <button type="button" className="btn btn-success" onClick={() => this.modiferInfoModule()}>Mdifier</button>
                                 </div>
                             </div>
                         </div>
@@ -490,15 +523,16 @@ class Ajouter_S extends Component {
         );
     }
 
-    itemListSpec = () => {
-        const Resalt = this.state.listSpec.map(item => {
+    itemListModule = () => {
+        const Resalt = this.state.listModule.map(item => {
             return (
                 <tr data-toggle="modal" data-target=".exampleModal" key={item.id}
-                    onClick={() => this.getInfoSpecInItemList(item.id)}>
+                    onClick={() => this.getInfoModuleInItemList(item.id)}>
                     <th scope="row">{item.id}</th>
+                    <td>{item.nom_module}</td>
+                    <td>{item.semestre}</td>
                     <td>{item.nom_spec}</td>
                     <td>{item.annee}</td>
-                    <td>{item.nom + " " + item.prenom}</td>
                 </tr>
 
             );
@@ -506,15 +540,15 @@ class Ajouter_S extends Component {
         return Resalt;
     }
 
-    itemListProf = () => {
-        const Resalt = this.state.listProf.map(item => {
+    itemListSpec = () => {
+        const Resalt = this.state.listSpec.map(item => {
             return (
                 <div className="w-100 item-search pl-3 py-1"
-                    key={item.id} onClick={() => this.funChangeInputProfResponsable({
-                        id_profResponsable: item.id,
-                        nomPrenom: item.nom + " " + item.prenom
+                    key={item.id} onClick={() => this.funChangeInputSpec({
+                        id_specialite: item.id,
+                        specialite: item.nom_spec
                     })}>
-                    {item.nom + " " + item.prenom}
+                    {item.nom_spec}
                 </div>
             );
         });
@@ -537,77 +571,92 @@ class Ajouter_S extends Component {
         this.setState({
             formModale: type,
             id: '',
-            nom_spec: '',
-            annee: 'L2',
-            id_profResponsable: '',
-            profResponsable: '',
+            nom_module: '',
+            fondamentale: 'oui',
+            coef: '',
+            semestre: '1',
+            id_specialite: '',
+            specialite: '',
         });
     }
 
-    funChangeInputNomSpec = (e) => {
+    funChangeInputNomModule = (e) => {
         this.setState({
-            nom_spec: e.target.value
+            nom_module: e.target.value
         });
     }
 
-    funChangeInputAnnee = (e) => {
+    funChangeInputCoef = (e) => {
         this.setState({
-            annee: e.target.value
+            coef: e.target.value
         });
     }
 
-    funChangeInputProfResponsable = (val) => {
+    funChangeInputSemestre = (e) => {
         this.setState({
-            id_profResponsable: val.id_profResponsable,
-            profResponsable: val.nomPrenom
+            semestre: e.target.value
         });
     }
 
-    funEmptyInputProfResponsable = () => {
+    funChangeInputFondamentale = (e) => {
         this.setState({
-            id_profResponsable: '',
-            profResponsable: ''
+            fondamentale: e.target.value
         });
-        this.getListeALLProf();
     }
 
-    getInfoSpecInItemList = (idSpec) => {
+    funChangeInputSpec = (val) => {
+        this.setState({
+            id_specialite: val.id_specialite,
+            specialite: val.specialite
+        });
+    }
+
+    funEmptyInputSpec = () => {
+        this.setState({
+            id_specialite: '',
+            specialite: ''
+        });
+        this.getListeALLModule();
+    }
+
+    getInfoModuleInItemList = (idModule) => {
+        console.log();
         this.funChangeTypeModal('modifer');
-        const { id, nom_spec, annee, email, id_profResponsable, nom, prenom } =
-            this.state.listSpec.filter(item => item.id === idSpec)[0];
+        const { id, nom_module, fondamentale, coef, semestre, id_specialite, nom_spec } =
+            this.state.listModule.filter(item => item.id === idModule)[0];
         this.setState({
             id: id,
-            nom_spec: nom_spec,
-            annee: annee,
-            id_profResponsable: id_profResponsable,
-            profResponsable: nom + " " + prenom
-
+            nom_module: nom_module,
+            fondamentale: fondamentale,
+            coef: coef,
+            semestre: semestre,
+            id_specialite: id_specialite,
+            specialite: nom_spec
 
         });
-        console.log(email);
     }
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    funchangeInputCherchSpec = (e) => {
+    funchangeInputCherchModule = (e) => {
         this.setState({
             inputcher: e.target.value.trim()
         });
         if (e.target.value.trim()) {
-            this.getCherSpec(e.target.value.trim());
+            this.getCherModule(e.target.value.trim());
         } else {
-            this.getListeALLSpec();
+            this.getListeALLModule();
         }
 
     }
 
-    funchangeInputsearchProf = (e) => {
+    funchangeInputsearchspec = (e) => {
         if (e.target.value.trim()) {
-            this.getCherProf(e.target.value.trim());
+            this.getCherSpec(e.target.value.trim());
         } else {
-            this.getListeALLProf();
+            this.getListeALLModule();
         }
 
     }
@@ -629,4 +678,4 @@ class Ajouter_S extends Component {
 
 }
 
-export default Ajouter_S;
+export default Ajouter_M;

@@ -6,6 +6,8 @@ import Body from "./../pages/body";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./../helpers/spinner";
+import HOST from "./../helpers/host";
+import NotAffectation from "./../helpers/notAffectation";
 
 class Home extends Component {
 
@@ -14,6 +16,7 @@ class Home extends Component {
     navleftToggled: false,
     ComponentPage: "Accueil",
     component: "spinner",
+    Affectation: true,
     user: null,
     message: [],
     itemMessage: null
@@ -32,11 +35,11 @@ class Home extends Component {
     }
   }
 
- 
+
 
   //---------------------------------------------contact server----------------------------------------
   funAccountReview = (sessionUser) => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+    const API_PATH = HOST + "/project/backend/ajax/user.php";
     const { userName, password } = sessionUser;
     axios({
       method: 'post',
@@ -59,7 +62,7 @@ class Home extends Component {
   }
 
   funGetALLInformationUser = (sessionUser) => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+    const API_PATH = HOST + "/project/backend/ajax/user.php";
     const { id_typeUser, typeUser } = sessionUser;
     axios({
       method: 'post',
@@ -98,8 +101,11 @@ class Home extends Component {
               <NavTop FunNavChaneToggled={this.FunNavChaneToggled} ComponentPage={this.state.ComponentPage} user={this.state.user}
                 FunSendMessageHome={this.FunSendMessageHome} FunNavChangePage={this.FunNavChangePage} FunGetItemMessage={this.FunGetItemMessage} />
               {/* <Alert /> */}
-              <Body ComponentPage={this.state.ComponentPage} message={this.state.message} 
-              itemMessagePushInNav={this.state.itemMessage} FunGetItemMessage={this.FunGetItemMessage} />
+              {this.state.Affectation
+                ? <Body ComponentPage={this.state.ComponentPage} message={this.state.message}
+                  itemMessagePushInNav={this.state.itemMessage} FunGetItemMessage={this.FunGetItemMessage} NotAffectation={this.NotAffectation} />
+                : <NotAffectation />
+              }
             </div>
             <Footer />
           </div>
@@ -151,6 +157,12 @@ class Home extends Component {
     });
     console.log('home :' + item);
 
+  }
+
+  NotAffectation = () => {
+    this.setState({
+      Affectation: false
+    });
   }
 
   // -------------------------------- Alert -----------------------------------------

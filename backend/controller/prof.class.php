@@ -7,10 +7,12 @@ class controller_prof
 {
 
 	private $db;
+	private $thisYear;
 
 	function __construct()
 	{
 		$this->db = new model_database();
+		$this->thisYear = new controller_historique();
 	}
 
 	/**
@@ -25,15 +27,24 @@ class controller_prof
 		return $this->db->resultSet();
 	}
 
+	public function getProfForAdmin()
+	{
+		$req = "SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,
+		prof.id as id_prof ,prof.nom ,prof.prenom ,prof.image FROM prof ,user 
+		WHERE user.typeUser='prof' and user.id_typeUser = prof.id ;";
+		$this->db->query($req);
+		return $this->db->resultSet();
+	}
+
 	public function getAllProfGroup($idGroup, $annee, $idSpes, $semestre)
 	{
 		$req =
-			"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,prof.id as id_prof ,prof.nom ,prof.prenom ,prof.image ,prof_groupe.role ,module.id as id_module ,module.nom_module 
+			"SELECT user.id as idUser ,user.typeUser ,user.id_typeUser ,prof.id as id_prof ,prof.nom ,prof.prenom ,prof.image ,historique_prof.role ,module.id as id_module ,module.nom_module 
 		   ,module.semestre ,specialite.id as id_sp ,specialite.nom_spec ,specialite.annee 
-		   FROM user ,prof_groupe ,module ,prof ,specialite
-            WHERE prof_groupe.id_groupe = $idGroup
-			and prof_groupe.annee = '$annee' and prof_groupe.id_prof = prof.id 
-            and prof_groupe.id_module = module.id and module.semestre=$semestre
+		   FROM user ,historique_prof ,module ,prof ,specialite
+            WHERE historique_prof.id_groupe = $idGroup
+			and historique_prof.annee = '$annee' and historique_prof.id_prof = prof.id 
+            and historique_prof.id_module = module.id and module.semestre=$semestre and historique_prof.semestre=$semestre
             and module.id_specialite = specialite.id and specialite.id =$idSpes
 			and user.typeUser = 'prof' and user.id_typeUser= prof.id;";
 		$this->db->query($req);
@@ -203,8 +214,15 @@ class controller_prof
 		$this->db->query($req);
 		return $this->db->resultSet();
 	}
+	public function cherProfForAdmin($nomOUprenom)
+	{
+		$req = "SELECT User.id as idUser ,user.id_typeUser , user.typeUser,prof.* FROM prof ,user WHERE
+			 prof.prenom LIKE '$nomOUprenom%' and user.typeUser = 'prof' and user.id_typeUser = prof.id ";
+		$this->db->query($req);
+		return $this->db->resultSet();
+	}
 
-	public function getCherEtudiant()
+	public function getCherEtudiant($annee)
 	{
 		if (isset($_POST['moteDeCHer'])) {
 			$req =
@@ -213,7 +231,7 @@ class controller_prof
 			FROM user,etudiant ,historique_etudiant, groupe ,section ,specialite 
 			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id 
 			and historique_etudiant.id_etudiant = etudiant.id and etudiant.prenom LIKE '" . $_POST['moteDeCHer'] . "%'
-			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='2019/2020' 
+			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='$annee' 
 			and groupe.id_section = section.id and section.id_specialite = specialite.id ;";
 			$this->db->query($req);
 			$result = $this->db->resultSet();
@@ -222,7 +240,7 @@ class controller_prof
 		// echo json_encode($this->faculty->getInformation($_POST['id_etudiant'], '2019/2020'));
 	}
 
-	public function getMyEtudiant()
+	public function getMyEtudiant($annee)
 	{
 		if (isset($_POST['id_Group'])) {
 			$req =
@@ -231,7 +249,7 @@ class controller_prof
 			FROM user,etudiant ,historique_etudiant, groupe ,section ,specialite 
 			WHERE  user.typeUser='etudiant' and user.id_typeUser = etudiant.id 
 			and groupe.id =" . $_POST['id_Group'] . " and historique_etudiant.id_etudiant = etudiant.id 
-			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='2019/2020' 
+			and historique_etudiant.id_groupe = groupe.id and historique_etudiant.annee ='$annee' 
 			and groupe.id_section = section.id and section.id_specialite = specialite.id ;";
 			$this->db->query($req);
 			$result = $this->db->resultSet();
@@ -354,7 +372,7 @@ class controller_prof
 			echo json_encode($result);
 		}
 	}
-	
+
 	public function addProf()
 	{
 		$issets = isset($_POST['matricule']) && isset($_POST['nom'])
@@ -410,6 +428,80 @@ class controller_prof
 				} catch (\Throwable $th) {
 					echo "false";
 				}
+			}
+		}
+	}
+
+	public function AffectationGetAllProfGroup()
+	{
+		if (isset($_POST['idGrp'])  && isset($_POST['annee']) && isset($_POST['semestre'])) {
+			$req = "SELECT historique_prof.id as idHstoriqueProf, prof.id ,prof.matricule ,prof.nom ,prof.prenom ,prof.phone ,prof.email , historique_prof.id_module 
+			,module.nom_module ,module.fondamentale ,module.coef ,historique_prof.role FROM `historique_prof` ,prof ,module 
+			 WHERE historique_prof.id_prof = prof.id and historique_prof.id_module = module.id and
+			 historique_prof.id_groupe = :idGrp and historique_prof.semestre = :semestre and historique_prof.annee= :annee ;";
+			$this->db->query($req);
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			$this->db->bind(":semestre",  strip_tags(trim($_POST['semestre'])));
+			$result = $this->db->resultSet();
+			echo json_encode($result);
+		}
+	}
+
+	public function affecterProfInGroup()
+	{
+		$issets = isset($_POST['idGrp'])  && isset($_POST['idProf']) && isset($_POST['semestre'])
+			&& isset($_POST['idModule'])  && isset($_POST['role']) && isset($_POST['annee']);
+		if ($issets) {
+			$req = "INSERT INTO `historique_prof` (`id`, `id_prof`, `id_groupe`, `id_module`, `semestre`, `role`, `annee`)
+			 VALUES (NULL, :idProf, :idGrp, :idModule, :semestre, :role, :annee);";
+			$this->db->query($req);
+			$this->db->bind(":idProf",  strip_tags(trim($_POST['idProf'])));
+			$this->db->bind(":idGrp",  strip_tags(trim($_POST['idGrp'])));
+			$this->db->bind(":idModule",  strip_tags(trim($_POST['idModule'])));
+			$this->db->bind(":semestre",  strip_tags(trim($_POST['semestre'])));
+			$this->db->bind(":role",  strip_tags(trim($_POST['role'])));
+			$this->db->bind(":annee",  strip_tags(trim($_POST['annee'])));
+			try {
+				$this->db->execute();
+				echo "true";
+			} catch (\Throwable $th) {
+				echo "false";
+			}
+		}
+	}
+
+	public function modiferAffecterProfInGroup()
+	{
+		$issets =  isset($_POST['idProf']) && isset($_POST['idModule'])  && isset($_POST['role']) && isset($_POST['id']);
+		if ($issets) {
+			$req = "UPDATE `historique_prof` SET `id_module` = :idModule , id_prof= :idProf ,role= :role  
+			WHERE `historique_prof`.`id` = :id;";
+			$this->db->query($req);
+			$this->db->bind(":idProf",  strip_tags(trim($_POST['idProf'])));
+			$this->db->bind(":idModule",  strip_tags(trim($_POST['idModule'])));
+			$this->db->bind(":role",  strip_tags(trim($_POST['role'])));
+			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+			try {
+				$this->db->execute();
+				echo "true";
+			} catch (\Throwable $th) {
+				echo "false";
+			}
+		}
+	}
+
+	public function suprimerAffecterProfInGroup()
+	{
+		if (isset($_POST['id'])) {
+			$req = "DELETE FROM `historique_prof` WHERE `historique_prof`.`id` =:id;";
+			$this->db->query($req);
+			$this->db->bind(":id",  strip_tags(trim($_POST['id'])));
+			try {
+				$this->db->execute();
+				echo "true";
+			} catch (\Throwable $th) {
+				echo "false";
 			}
 		}
 	}

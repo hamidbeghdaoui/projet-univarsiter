@@ -47,6 +47,21 @@ if (isset($_POST['but'])) {
         case 'get-cher-etudiant-for-admin':
             $etudiant->getCherEtudiantForAdmin();
             break;
+        case 'affectation-get-all-etudiant-group':
+            $etudiant->affectationGetAllEtudiantGroup();
+            break;
+        case 'affectation-get-all-etudiant':
+            $etudiant->affectationGetAllEtudiant();
+            break;
+        case 'affecter-etudiant-in-group':
+            $etudiant->affecterEtudiantInGroup();
+            break;
+        case 'supprimer-etudiant-in-group':
+            $etudiant->supprimerEtudiantInGroup();
+            break;
+        case 'affectation-get-cher':
+            $etudiant->affectationGetCher();
+            break;
         case 'cher-prof':
             if (isset($_POST['moteDeCHer'])) {
                 $prof = new controller_prof();

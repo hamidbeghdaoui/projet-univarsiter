@@ -1,40 +1,128 @@
 import React, { Fragment, Component } from 'react';
 import axios from "axios";
-import TypeFilePosible from "./../helpers/typeFilePosible";
-import ValidURL from "./../helpers/validURL";
-import Spinner from "./../helpers/spinner";
-import Alert from "./../helpers/alert";
+import TypeFilePosible from "../helpers/typeFilePosible";
+import ValidURL from "../helpers/validURL";
+import Spinner from "../helpers/spinner";
+import Alert from "../helpers/alert";
 import HOST from "./../helpers/host";
 
-class AjouterPubEtudiant extends Component {
+class AjouterPubAdmin extends Component {
 
 
     // ----------------------------------------- data----------------------------------------
     state = {
         POST: {
-            but: 'publication-Etudiant',
+            but: 'publication-admin',
             post: '',
             file: '',
             typeFile: '',
             line: '',
             typePublication: 'spécialité',
+            id_typePublication: '',
         },
         component: "Ajouter Publication",
+        targetGroup: 'etudiant',
         error: null,
         alert: {
             color: 'warning',
             title: 'REMARQUE',
             subject: 'Ce type de fichier ne peut pas être envoyé',
         },
-        colorInputLine: "info"
+        colorInputLine: "info",
+        componentFaculty: 'spinner',
+        resultFaculty: []
 
     }
 
-    //---------------------------------------------contact server----------------------------------------
-    AjouterPublication = e => {
-        e.preventDefault();
-        if (this.state.POST.post.trim() && this.state.POST.typePublication.trim()) {
 
+    //---------------------------------------------When the page loads----------------------------------------
+    componentDidMount() {
+        this.getAllspic();
+    }
+
+    //---------------------------------------------contact server----------------------------------------
+    getPlus = () => {
+        // ------------------------------------hna
+        console.log('qsdzdzss');
+        const API_PATH = HOST + "/project/backend/ajax/admin.php";
+        this.setState({
+            componentFaculty: 'spinner',
+        });
+        axios({
+            method: 'post',
+            url: `${API_PATH}`,
+            headers: { 'content-type': 'application/json' },
+            data: {
+                but: 'get-plus',
+                typePublication: this.state.POST.typePublication,
+                id_typePublication: this.state.POST.id_typePublication,
+            },
+        })
+            .then(result => {
+                if ((result.data).length != 0) {
+                    console.log(result.data);
+                    var typePublication;
+                    if (this.state.POST.typePublication === 'spécialité') {
+                        typePublication = "section";
+                    } else {
+                        typePublication = "group";
+                    }
+
+                    this.setState({
+                        POST: {
+                            but: 'publication-admin',
+                            post: this.state.POST.post,
+                            file: this.state.POST.file,
+                            typeFile: this.state.POST.typeFile,
+                            line: this.state.POST.line,
+                            typePublication: typePublication,
+                            id_typePublication: result.data[0].id,
+                        },
+                        componentFaculty: 'show',
+                        resultFaculty: result.data
+                    });
+                }
+            })
+            .catch();
+    }
+
+    getAllspic = () => {
+        const API_PATH = HOST + "/project/backend/ajax/admin.php";
+        var sessionUser = JSON.parse(localStorage.getItem('user') || null);
+        axios({
+            method: 'post',
+            url: `${API_PATH}`,
+            headers: { 'content-type': 'application/json' },
+            data: {
+                but: 'get-all-spic'
+            },
+        })
+            .then(result => {
+                console.log(result.data);
+                this.setState({
+                    POST: {
+                        but: 'publication-admin',
+                        post: this.state.POST.post,
+                        file: this.state.POST.file,
+                        typeFile: this.state.POST.typeFile,
+                        line: this.state.POST.line,
+                        typePublication: 'spécialité',
+                        id_typePublication: result.data[0].id,
+                    },
+                    componentFaculty: 'show',
+                    resultFaculty: result.data
+                });
+            })
+            .catch(error => this.setState({ error: error.message }));
+    }
+
+
+    AjouterPublication = e => {
+        console.log(this.state);
+        e.preventDefault();
+        let bool = this.state.POST.post.trim() ;
+        if(this.state.targetGroup === 'etudiant') bool = bool && this.state.POST.typePublication.trim();
+        if (bool) {
             this.setState({
                 component: "spinner"
             });
@@ -89,7 +177,7 @@ class AjouterPubEtudiant extends Component {
     }
 
     funAxios = (Content, TypeContent) => {
-        const API_PATH = HOST + "/project/backend/ajax/etudiant.php";
+        const API_PATH = HOST + "/project/backend/ajax/admin.php";
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         // console.log(sessionUser);
         axios({
@@ -98,12 +186,14 @@ class AjouterPubEtudiant extends Component {
             headers: { 'content-type': 'application/json' },
             data: {
                 but: 'publication-Etudiant',
+                targetGroup: this.state.targetGroup,
                 idUser: sessionUser.id,
                 id_typeUser: sessionUser.id_typeUser,
                 post: this.state.POST.post,
                 file: Content,
                 typeFile: TypeContent,
                 typePublication: this.state.POST.typePublication,
+                id_typePublication: this.state.POST.id_typePublication
             }
         })
             .then(result => {
@@ -117,6 +207,7 @@ class AjouterPubEtudiant extends Component {
                             typeFile: '',
                             line: '',
                             typePublication: 'spécialité',
+                            id_typePublication: ''
                         },
                         error: "Resalt",
                         alert: {
@@ -127,6 +218,7 @@ class AjouterPubEtudiant extends Component {
                         colorInputLine: "info",
                         component: "Ajouter Publication"
                     });
+                    this.getAllspic();
                 } else {
 
                 }
@@ -136,7 +228,30 @@ class AjouterPubEtudiant extends Component {
     }
 
     // -------------------------------------------- Content ------------------------------------------
-    ComponentEtudiant = () => {
+    ComponentListeOption = () => {
+        const itemListe = this.state.resultFaculty.map(item => {
+            switch (this.state.POST.typePublication) {
+                case 'spécialité':
+                    return (
+                        <option key={item.id} value={item.id} > {item.annee + " ( " + item.nom_spec + " )"} </option>
+                    );
+
+                case 'section':
+                    return (
+                        <option key={item.id} value={item.id} > {" Section (" + item.nom_sec + ")"} </option>
+                    );
+                case 'group':
+                    return (
+                        <option key={item.id} value={item.id} > {" group(" + item.nom_grp + ")"} </option>
+                    );
+
+
+            }
+        });
+        return (itemListe);
+    }
+
+    ComponentProf = () => {
         return (
             <Fragment>
                 <div className="m-2">
@@ -169,20 +284,36 @@ class AjouterPubEtudiant extends Component {
                             <input type="text" className={"form-control border-" + this.state.colorInputLine} value={this.state.POST.line} onChange={this.funChangeInputLine}
                                 disabled={this.state.POST.file ? true : false} id="tewt1" />
                         </div>
-                        <hr className="sidebar-divider mx-5" />
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <button className="btn btn-outline-secondary" type="button">type Publiction</button>
-                            </div>
-                            <select className="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon"
-                                value={this.state.POST.typePublication} onChange={this.funChangeInputTypePub} >
-                                <option value="spécialité" >Visible dans ma spécialité</option>
-                                <option value="section">Visible dans mon section</option>
-                                <option value="group">Visible dans mon group</option>
-                            </select>
-                        </div>
+
+                        {this.state.targetGroup != 'etudiant' ? "" :
+                            <Fragment>
+                                <hr className="sidebar-divider mx-5" />
+                                {this.state.componentFaculty === Spinner ? <Spinner /> :
+                                    <div className="row">
+                                        <div className={"input-group mb-3 col-10"}>
+                                            <div className="input-group-prepend">
+                                                <button className="btn btn-outline-secondary" type="button">{this.state.POST.typePublication}</button>
+                                            </div>
+                                            <select className="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon"
+                                                value={this.state.POST.id_typePublication} onChange={this.funChangeInputTypePub} >
+                                                {this.ComponentListeOption()}
+                                            </select>
+                                        </div>
+                                        {this.state.POST.typePublication === 'group' ?
+                                            <div className="col-2 text-right">
+                                                <button className="btn btn-danger" type="button" onClick={this.funCLickBtnAnuler}>Anuller</button>
+                                            </div>
+                                            :
+                                            <div className="col-2 text-right">
+                                                <button className="btn border-secondary " type="button" onClick={this.getPlus}>Plus</button>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </Fragment>}
                         <div className="text-center mt-5">
-                            <button type="submit" className="btn btn-primary px-4 mx-auto" onClick={this.AjouterPublication}>Publié</button>
+                            <button type="submit" className="btn btn-primary px-4 mx-auto" onClick={ this.AjouterPublication}
+                                disabled={this.state.resultFaculty.length === 0 ? true : false}>Publié</button>
                         </div>
                     </form>
                 </div>
@@ -190,14 +321,22 @@ class AjouterPubEtudiant extends Component {
         );
     }
 
-
-
     ComponentMain = () => {
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
         return (
             <Fragment>
+                <ul className="nav nav-pills justify-content-end">
+                    <li className="nav-item">
+                        <a className={"nav-link mx-2 " + (this.state.targetGroup != 'etudiant' ? "" : 'active')}
+                            onClick={() => this.funChangeState({ targetGroup: 'etudiant' })}>Etudiant</a>
+                    </li>
+                    <li className="nav-item  mx-2">
+                        <a className={"nav-link mx-2 " + (this.state.targetGroup != 'prof' ? "" : 'active')}
+                            onClick={() => this.funChangeState({ targetGroup: 'prof' })} >Prof</a>
+                    </li>
+                </ul>
                 {(this.state.error === null) ? "" : <Alert alert={this.state.alert} funHidenAlert={this.funHidenAlert} />}
-                {this.ComponentEtudiant()}
+                {this.ComponentProf()}
             </Fragment>
         );
     }
@@ -221,6 +360,7 @@ class AjouterPubEtudiant extends Component {
                 typeFile: this.state.POST.typeFile,
                 line: this.state.POST.line,
                 typePublication: this.state.POST.typePublication,
+                id_typePublication: this.state.POST.id_typePublication
             }
         });
     }
@@ -235,6 +375,7 @@ class AjouterPubEtudiant extends Component {
                         typeFile: e.target.files[0].type,
                         line: this.state.POST.line,
                         typePublication: this.state.POST.typePublication,
+                        id_typePublication: this.state.POST.id_typePublication
                     },
                     colorInputLine: 'dark'
                 });
@@ -264,6 +405,7 @@ class AjouterPubEtudiant extends Component {
                     typeFile: 'line',
                     line: e.target.value,
                     typePublication: this.state.POST.typePublication,
+                    id_typePublication: this.state.POST.id_typePublication
                 },
                 colorInputLine: 'success'
             });
@@ -275,6 +417,7 @@ class AjouterPubEtudiant extends Component {
                     typeFile: this.state.POST.typeFile,
                     line: '',
                     typePublication: this.state.POST.typePublication,
+                    id_typePublication: this.state.POST.id_typePublication
                 },
                 colorInputLine: 'info'
 
@@ -291,7 +434,8 @@ class AjouterPubEtudiant extends Component {
                 file: this.state.POST.file,
                 typeFile: this.state.POST.typeFile,
                 line: this.state.POST.line,
-                typePublication: e.target.value,
+                typePublication: this.state.POST.typePublication,
+                id_typePublication: e.target.value,
             }
         });
     }
@@ -305,6 +449,7 @@ class AjouterPubEtudiant extends Component {
                 typeFile: '',
                 line: this.state.POST.line,
                 typePublication: this.state.POST.typePublication,
+                id_typePublication: this.state.POST.id_typePublication
             }
         });
     }
@@ -316,9 +461,23 @@ class AjouterPubEtudiant extends Component {
                 typeFile: '',
                 line: '',
                 typePublication: this.state.POST.typePublication,
+                id_typePublication: this.state.POST.id_typePublication
             }
         });
     }
+
+    funCLickBtnAnuler = () => {
+        this.setState({
+            resultFaculty: []
+        });
+        this.getAllspic();
+
+    }
+
+    funChangeState = (data) => {
+        this.setState(data);
+    }
+
 
 
 
@@ -334,4 +493,4 @@ class AjouterPubEtudiant extends Component {
 
 }
 
-export default AjouterPubEtudiant;
+export default AjouterPubAdmin;

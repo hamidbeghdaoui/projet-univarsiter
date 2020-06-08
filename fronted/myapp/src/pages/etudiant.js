@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import EtudiantForEtudiant from "./../components/etudiantForEtudiant";
 import EtudiantForProf from "./../components/etudiantForProf";
+import EtudiantForAdmin from "../components/etudiantForAdmin";
 class Etudiant extends Component {
     ComponentEtudiant = () => {
         var sessionUser = JSON.parse(localStorage.getItem('user') || null);
@@ -9,6 +10,8 @@ class Etudiant extends Component {
                 return (<EtudiantForEtudiant />);
             case 'prof':
                 return (<EtudiantForProf />);
+            case 'admin':
+                return (<EtudiantForAdmin />);
         }
     }
 

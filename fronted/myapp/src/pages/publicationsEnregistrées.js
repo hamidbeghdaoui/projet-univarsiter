@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Publication from "./../components/publication";
 import axios from "axios";
 import Spinner from "./../helpers/spinner";
+import HOST from "./../helpers/host";
 
 class PublicationsEnregistrées extends Component {
   // ----------------------------------------- data----------------------------------------
@@ -27,10 +28,10 @@ class PublicationsEnregistrées extends Component {
     let API_PATH = "";
     switch (sessionUser.typeUser) {
       case "etudiant":
-        API_PATH ="http://127.0.0.1/project/backend/ajax/etudiant.php";
+        API_PATH =  HOST + "/project/backend/ajax/etudiant.php";
         break;
       case "prof":
-        API_PATH ="http://127.0.0.1/project/backend/ajax/prof.php";
+        API_PATH =  HOST + "/project/backend/ajax/prof.php";
         break;
     }
     console.log(sessionUser);
@@ -42,13 +43,13 @@ class PublicationsEnregistrées extends Component {
         but: 'get-my-pub-enreg',
         id_typeUser: sessionUser.id_typeUser,
         id_User: sessionUser.id
-    }
+      }
     })
       .then(result => {
         console.log(result.data);
         this.setState({
           component: "publication",
-          listPub:result.data 
+          listPub: result.data
 
         });
       })
@@ -60,7 +61,7 @@ class PublicationsEnregistrées extends Component {
     return (
       this.state.listPub.length === 0 ?
         <div className="text-center m-5 p-5">
-         Il n'y a aucun publication à afficher
+          Il n'y a aucun publication à afficher
         </div>
         : <Publication getPub={this.getPubEnreg} pubEnreg={true} listPub={this.state.listPub} />
     );

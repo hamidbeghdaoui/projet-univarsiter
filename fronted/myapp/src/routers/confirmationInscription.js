@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Spinner from "./../helpers/spinner";
 import Alert from "./../helpers/alert";
+import HOST from "./../helpers/host";
 class ConfirmationInscription extends Component {
 
   // ----------------------------------------- data----------------------------------------
@@ -53,7 +54,7 @@ class ConfirmationInscription extends Component {
         });
         if (this.state.POST.image) {
           // --------------------------------- Download the image and return name Image ----------------------
-          const API_PATH = "http://127.0.0.1/project/backend/ajax/UploadFile.php";
+          const API_PATH =  HOST + "/project/backend/ajax/UploadFile.php";
           const fd = new FormData();
           fd.append('imageUser', this.state.POST.image);
 
@@ -95,7 +96,7 @@ class ConfirmationInscription extends Component {
   }
 
   funAxios = (image) => {
-    const API_PATH = "http://127.0.0.1/project/backend/ajax/user.php";
+    const API_PATH =  HOST + "/project/backend/ajax/user.php";
     axios({
       method: 'post',
       url: `${API_PATH}`,
@@ -112,7 +113,6 @@ class ConfirmationInscription extends Component {
       }
     })
       .then(result => {
-        alert(result.data);
         if (result.data.addUser && result.data.updateTypeUser) {
           document.getElementById("Login").click();
         } else {
